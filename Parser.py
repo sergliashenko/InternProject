@@ -4,7 +4,7 @@ import urllib.request
 import json
 from bs4 import BeautifulSoup
 from pip._vendor.progress import counter
-MASK_URL = "https://www.upwork.com/o/jobs/browse/"
+MASK_URL = "https://www.upwork.com/o/jobs/browse/?q="
 
 def get_html(url):
    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -30,17 +30,24 @@ def parse(html):
    #creating map
    for it in range(count_of_projects):
        projects.append({
-           "Job name": jobs_names[it].text.split(),
-           "Job description": job_description[it].text.split()
+           "Job name": jobs_names[it].text, # " ".join(l)
+           "Job description": job_description[it].text # " ".join(l)
            # "Required skills": [skill.text.split() for skill in job_skills][1:]
        })
 
    #write data to json file
-   with open("someName.json", "w") as file:
+   #TODO: change name
+   with open("_~01e5cd2ad0b2de83c6.json", "w") as file:
        json.dump(projects, file, indent=2, ensure_ascii=False)
 
 
 def main():
+    direction = "Python Machine Learning"
+    # TODO: 1) browse jobs by direction
+    # TODO: 2) find how many jobs at the top of the page
+    # TODO: 3) find ID of each job
+    # TODO: 4) save info about job into json file with name str(ID)
+    # TODO: 5) do the same with Upwork API
     page_count = get_pages_count(get_html(MASK_URL))
     print("Find pages count: ", page_count)
     projects = []
