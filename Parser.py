@@ -10,9 +10,10 @@ def get_html(url):
  page = urllib.request.urlopen(req)
  return page.read()
 
-def get_jobs_found(html):
+def get_jobs_count(html):
    soup = BeautifulSoup(html, "html.parser")
    var = soup.find("meta").get("content").split()
+   jobs_found = 0
 
    for i in var:
        if i.isdigit():
@@ -27,7 +28,7 @@ def parser_for_one_page(html):
  job_description = table.find_all("div", class_="description break")                         #full description of projects
  count_of_projects_name = len(jobs_caption)
 
- #push categories to map
+ #push categories to dict
  for it in range(count_of_projects_name):
      job_id = jobs_caption[it].find("a").get("href").replace("/o/jobs/job/", "")
      project = {
@@ -41,20 +42,20 @@ def parser_for_one_page(html):
 def main():
   direction = "Python Machine Learning"
   number_of_page = 1
-
-  pages = get_jobs_found(get_html(MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")))
+    
+  pages = get_jobs_count(get_html(MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")))
   print("Jobs found for direction: " + '"' + direction + '"' + ": " + str(pages))
 
   #Find count of page
+  pages = pages // 10
   if pages % 10 != 0:
-      pages = pages // 10 + 1
+      pages += 1
 
   print("All pages:" + str(pages))
 
-  while number_of_page <= pages:
+  for number_of_page in range(1, pages + 1):
       print("At now parse pages: " + str(number_of_page))
       parser_for_one_page(get_html(MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")))
-      number_of_page += 1
 
   # TODO: 5) do the same with Upwork API
 
