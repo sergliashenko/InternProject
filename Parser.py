@@ -29,11 +29,11 @@ def parser_for_one_page(html):
  count_of_projects_name = len(jobs_caption)
 
  #push categories to dict
- for it in range(count_of_projects_name):
-     job_id = jobs_caption[it].find("a").get("href").replace("/o/jobs/job/", "")
+ for i in range(count_of_projects_name):
+     job_id = jobs_caption[i].find("a").get("href").replace("/o/jobs/job/", "")
      project = {
-         "Job name": jobs_caption[it].text,
-         "Job description": job_description[it].text
+         "Job name": jobs_caption[i].text,
+         "Job description": job_description[i].text
      }
      #write data to json file
      with open(job_id[:-1] + ".json", "w", encoding='utf-8') as file:
@@ -47,9 +47,13 @@ def main():
   print("Jobs found for direction: " + '"' + direction + '"' + ": " + str(pages))
 
   #Find count of page
-  pages = pages // 10
+
   if pages % 10 != 0:
+      pages //= 10
       pages += 1
+  else:
+      pages //= 10
+
 
   print("All pages:" + str(pages))
 
