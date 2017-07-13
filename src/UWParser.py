@@ -39,7 +39,6 @@ def parser_for_one_page(html):
     with open(job_id[:-1] + ".json", "w", encoding='utf-8') as file:
         json.dump(project, file, indent=2, ensure_ascii=False)
 
-
 def parser_runner(direction):
     #direction = "Python Machine Learning"
     number_of_page = 1
