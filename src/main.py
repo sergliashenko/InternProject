@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-
-import parser_upwork
-
+from src import UWParser
     
+  
 def main():
-    parser_upwork.parser_runner("Python Machine Learning")
+    UWParser.parser_runner("Python Machine Learning")
 
-
+ 
 if __name__ == "__main__":
     main()
