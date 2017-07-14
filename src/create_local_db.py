@@ -30,12 +30,7 @@ session = Session()
 
 
 def populate_db(data):
-    new_list = []
-    for i in data:
-        new_data = User(i)
-        new_list.append(new_data)
-
-    session.add_all(new_list)
+    session.add_all([User(i) for i in data])
 
 session.commit()
 
