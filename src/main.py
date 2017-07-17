@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-from src import UWParser
+from src import uwApiParser
     
   
 def main():
-    UWParser.parser_runner("Python Machine Learning")
-
+    list_with_data = uwApiParser.get_jobs("Python", "Machine Learning")
+    uwApiParser.make_json_file(list_with_data)
  
 if __name__ == "__main__":
     main()
