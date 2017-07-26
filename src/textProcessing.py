@@ -43,28 +43,25 @@ def find_all_key_words(pages):
 
   # 2.Filtering
   # Delete stop words, words which length <= 2 and digits
+  # Switch all words to lower case
   filter_tokens = ["0"] * page_count
   for i in range(page_count):
-      filter_tokens[i] = [item for item in tokens[i] if item not in stopwords.words("english") and len(item) > 2 and not item.isdigit()]
+      filter_tokens[i] = [item.lower() for item in tokens[i] if item not in stopwords.words("english") and len(item) > 2 and not item.isdigit()]
 
-  # 3.Switch all words to lower case
-  for i in range(page_count):
-      filter_tokens[i] = [token.lower() for token in filter_tokens[i]]
-
-  # 4.Stemming
+  # 3.Stemming
   #After Stemming was corrupted some words. For example: machine->machin, everyone->everyon, etc.
   stemm = ["0"] * page_count
   stemmer = PorterStemmer()
   for i in range(page_count):
      stemm[i] = [stemmer.stem(token) for token in filter_tokens[i]]
 
-  # 5.TF
+  # 4.TF
   tf = ["0"] * page_count
   for i in range(page_count):
      count_terms_in_text = len(stemm[i])
      tf[i] = [count_tf(term, stemm[i], count_terms_in_text) for term in stemm[i]]
 
-  # 6.IDF
+  # 5.IDF
   idf = ["0"] * page_count
   tmp_list = []
   doc_counter = 0
@@ -76,7 +73,7 @@ def find_all_key_words(pages):
               tmp_list.append(math.log(page_count/doc_counter))
       idf[i] = tmp_list[:]
 
-  # 7.TF-IDF
+  # 6.TF-IDF
   dict_for_page = {}
   tfidf = ["0"] * page_count
   for i in range(page_count):
