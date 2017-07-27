@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-
+# #!/usr/bin/env python
+#
 # import urllib.request
 # import json
 # from bs4 import BeautifulSoup
@@ -36,14 +36,14 @@
 #             "Job name": jobs_caption[i].text,
 #             "Job description": job_description[i].text
 #         }
-#     #write data to json file
-#     with open(job_id[:-1] + ".json", "w", encoding='utf-8') as file:
-#         json.dump(project, file, indent=2, ensure_ascii=False)
+#         #write data to json file
+#         with open(job_id[:-1] + ".json", "w", encoding='utf-8') as file:
+#             json.dump(project, file, indent=2, ensure_ascii=False)
 #
 # def parser_runner(direction):
 #     #direction = "Python Machine Learning"
 #     number_of_page = 1
-#
+#     path = MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")
 #     pages = get_jobs_count(get_html(MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")))
 #     print("Jobs found for direction: " + '"' + direction + '"' + ": " + str(pages))
 #
@@ -61,3 +61,10 @@
 #         parser_for_one_page(get_html(MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")))
 #
 #         #TODO: 5) do the same with Upwork API
+#
+# def main():
+#     parser_runner("C++")
+#
+#
+# if __name__ == "__main__":
+#     main()

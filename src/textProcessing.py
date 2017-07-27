@@ -29,54 +29,54 @@ def find_json_file_in_dir(path):
 def get_text_from_files(json_files_pull):
   data = []
   for file_name in json_files_pull:
-     with open(DIR_PATH + "/" + file_name, "r") as file:
+     with open(DIR_PATH + "/" + file_name, "r", encoding="utf8") as file:
          data.append(json.load(file))
   return data
 
-def find_all_key_words(pages):
+def find_all_key_words(jobs_data):
   # 1.Tokenize
-  page_count = len(pages)
-  tokens = ["0"] * page_count
-  for i in range(page_count):
-     tokens[i] = word_tokenize(pages[i]["Job name"])
-     tokens[i] += word_tokenize(pages[i]["Job description"])
+  jobs_count = len(jobs_data)
+  tokens = ["0"] * jobs_count
+  for i in range(jobs_count):
+     tokens[i] = word_tokenize(jobs_data[i]["Job name"])
+     tokens[i] += word_tokenize(jobs_data[i]["Job description"])
 
   # 2.Filtering
   # Delete stop words, words which length <= 2 and digits
   # Switch all words to lower case
-  filter_tokens = ["0"] * page_count
-  for i in range(page_count):
+  filter_tokens = ["0"] * jobs_count
+  for i in range(jobs_count):
       filter_tokens[i] = [item.lower() for item in tokens[i] if item not in stopwords.words("english") and len(item) > 2 and not item.isdigit()]
 
   # 3.Stemming
   #After Stemming was corrupted some words. For example: machine->machin, everyone->everyon, etc.
-  stemm = ["0"] * page_count
+  stemm = ["0"] * jobs_count
   stemmer = PorterStemmer()
-  for i in range(page_count):
+  for i in range(jobs_count):
      stemm[i] = [stemmer.stem(token) for token in filter_tokens[i]]
 
   # 4.TF
-  tf = ["0"] * page_count
-  for i in range(page_count):
+  tf = ["0"] * jobs_count
+  for i in range(jobs_count):
      count_terms_in_text = len(stemm[i])
      tf[i] = [count_tf(term, stemm[i], count_terms_in_text) for term in stemm[i]]
 
   # 5.IDF
-  idf = ["0"] * page_count
+  idf = ["0"] * jobs_count
   tmp_list = []
   doc_counter = 0
-  for i in range(page_count):
+  for i in range(jobs_count):
       del tmp_list[:]
       for word in range(len(stemm[i])):
           if tf[i][word] > 0:
               doc_counter = count_doc_with_word(stemm[i][word], stemm)
-              tmp_list.append(math.log(page_count/doc_counter))
+              tmp_list.append(math.log(jobs_count/doc_counter))
       idf[i] = tmp_list[:]
 
   # 6.TF-IDF
   dict_for_page = {}
-  tfidf = ["0"] * page_count
-  for i in range(page_count):
+  tfidf = ["0"] * jobs_count
+  for i in range(jobs_count):
       dict_for_page.clear()
       for j in range(len(stemm[i])):
           # Make dict with word and tf-idf
@@ -101,7 +101,7 @@ def get_top_keywords(N):
       if N <= page_size:
           top_keywords[page] = [key[0] for key in tfidf[page][:N]]
       else:
-          print("Value of N which you entered, greater than count of word in page number " + str(page) +
-                "\nWill be displayed maximum for this page. \nMaximum = " + str(page_size))
+          print("Value of N which you entered, greater than count of word in job number " + str(page) +
+                "\nWill be displayed maximum words in this job description. \nMaximum = " + str(page_size))
           top_keywords[page] = [key[0] for key in tfidf[page][:page_size]]
   return top_keywords
