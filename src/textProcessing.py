@@ -5,6 +5,7 @@ import math
 from nltk import word_tokenize
 from nltk.stem.porter import *
 from nltk.corpus import stopwords
+import copy
 
 # dir with .json files
 DIR_PATH = "D:\ParserUpWork\data_raw"
@@ -27,19 +28,23 @@ def find_json_file_in_dir(path):
   return jsons
 
 def get_text_from_files(json_files_pull):
-  data = []
+  list_data = []
+  data = {}
   for file_name in json_files_pull:
-     with open(DIR_PATH + "/" + file_name, "r", encoding="utf8") as file:
-         data.append(json.load(file))
+     del list_data[:]
+     with open(DIR_PATH + "/" + file_name, "r") as file:
+         list_data.append(json.load(file))
+         data[file_name] = list_data[:]
   return data
 
 def find_all_key_words(jobs_data):
   # 1.Tokenize
   jobs_count = len(jobs_data)
+  keys_list = jobs_data.keys()
   tokens = ["0"] * jobs_count
   for i in range(jobs_count):
-     tokens[i] = word_tokenize(jobs_data[i]["Job name"])
-     tokens[i] += word_tokenize(jobs_data[i]["Job description"])
+     tokens[i] = word_tokenize(jobs_data.get(keys_list[i])[0]["Job name"])
+     tokens[i] += word_tokenize(jobs_data.get(keys_list[i])[0]["Job description"])
 
   # 2.Filtering
   # Delete stop words, words which length <= 2 and digits
@@ -93,15 +98,21 @@ def get_top_keywords(N):
   data = get_text_from_files(find_json_file_in_dir(DIR_PATH))
   tfidf = find_all_key_words(data)
 
+  files_names = data.keys()
   size = len(data)
-  top_keywords = ["0"] * size
+  #top_keywords = ["0"] * size
+  top_keywords = []
+  top_keywords_with_files_names = {}
   # Return TOP N key-words
   for page in range(size):
       page_size = len(tfidf[page])
+      del top_keywords[:]
       if N <= page_size:
-          top_keywords[page] = [key[0] for key in tfidf[page][:N]]
+          top_keywords = [key[0] for key in tfidf[page][:N]]
+          top_keywords_with_files_names[files_names[page]] = top_keywords[:]
       else:
           print("Value of N which you entered, greater than count of word in job number " + str(page) +
                 "\nWill be displayed maximum words in this job description. \nMaximum = " + str(page_size))
-          top_keywords[page] = [key[0] for key in tfidf[page][:page_size]]
-  return top_keywords
+          top_keywords = [key[0] for key in tfidf[page][:page_size]]
+          top_keywords_with_files_names[files_names[page]] = top_keywords[:]
+  return top_keywords_with_files_names

@@ -7,8 +7,9 @@ def main():
     # list_with_data = uwApiParser.get_jobs("Python", "Machine Learning")
     # uwApiParser.make_json_file(list_with_data)
     result = textProcessing.get_top_keywords(5)
-    for i in result:
-        print(i)
+    for key in result:
+        print(key + ": "),
+        print([val for val in result[key]])
  
 if __name__ == "__main__":
     main()
