@@ -16,8 +16,8 @@ def count_tf(term, full_text, count_terms_in_text):
 
 def count_doc_with_word(word, pages):
   counter = 0
-  for i in pages:
-      if word in i:
+  for list_of_word in pages:
+      if word in list_of_word:
           counter +=1
   return counter
 
@@ -40,7 +40,7 @@ def get_text_from_files(json_files_pull):
 def find_all_key_words(jobs_data):
   # 1.Tokenize
   jobs_count = len(jobs_data)
-  keys_list = jobs_data.keys()
+  keys_list = list(jobs_data.keys())
   tokens = ["0"] * jobs_count
   for i in range(jobs_count):
      tokens[i] = word_tokenize(jobs_data.get(keys_list[i])[0]["Job name"])
@@ -51,7 +51,8 @@ def find_all_key_words(jobs_data):
   # Switch all words to lower case
   filter_tokens = ["0"] * jobs_count
   for i in range(jobs_count):
-      filter_tokens[i] = [item.lower() for item in tokens[i] if item not in stopwords.words("english") and len(item) > 2 and not item.isdigit()]
+      filter_tokens[i] = [item.lower() for item in tokens[i] if item not in stopwords.words("english") and len(item) > 2
+                          and not item.isdigit()]
 
   # 3.Stemming
   #After Stemming was corrupted some words. For example: machine->machin, everyone->everyon, etc.
@@ -98,7 +99,7 @@ def get_top_keywords(N):
   data = get_text_from_files(find_json_file_in_dir(DIR_PATH))
   tfidf = find_all_key_words(data)
 
-  files_names = data.keys()
+  files_names = list(data.keys())
   size = len(data)
   #top_keywords = ["0"] * size
   top_keywords = []

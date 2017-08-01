@@ -1,8 +1,8 @@
-import textProcessing
+import src.textProcessing
 import spacy
 import en_core_web_sm
 
-#nlp = spacy.load("en")   this piece of code not work on my PC
+#nlp = spacy.load("en")   #this piece of code not work on my PC
 nlp = en_core_web_sm.load()
 
 #count the similarity between two jobs(input two lists of keywords and threshold)
@@ -36,8 +36,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
