@@ -8,7 +8,7 @@ from nltk.corpus import stopwords
 import copy
 
 # dir with .json files
-DIR_PATH = "D:\ParserUpWork\data_raw"
+DIR_PATH = "/Users/skondrat/repo/ParserUpWork/data_raw"
 
 def count_tf(term, full_text, count_terms_in_text):
  count_term = full_text.count(term)
@@ -46,6 +46,9 @@ def find_all_key_words(jobs_data):
      tokens[i] = word_tokenize(jobs_data.get(keys_list[i])[0]["Job name"])
      tokens[i] += word_tokenize(jobs_data.get(keys_list[i])[0]["Job description"])
 
+  # for v in jobs_data.values():
+  #     tokens[i] = word_tokenize(v["Job name"])
+  #     tokens[i] = word_tokenize(v["Job description"])
   # 2.Filtering
   # Delete stop words, words which length <= 2 and digits
   # Switch all words to lower case

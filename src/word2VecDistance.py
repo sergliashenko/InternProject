@@ -1,17 +1,21 @@
-import src.textProcessing
+import textProcessing
 import spacy
-import en_core_web_sm
+# import en_core_web_sm
 
-#nlp = spacy.load("en")   #this piece of code not work on my PC
-nlp = en_core_web_sm.load()
+nlp = spacy.load("en")   #this piece of code not work on my PC
+# nlp = en_core_web_sm.load()
 
 #count the similarity between two jobs(input two lists of keywords and threshold)
 def similarity_between_two_jobs(firstJob_keywords, secondJob_keywords, threshold):
-    total_size = len(firstJob_keywords) + len(secondJob_keywords)
+    total_size = len(firstJob_keywords) * len(secondJob_keywords)
     total_similarity = 0
+
+    #TODO: check if word2vec knows about keyword
     for first_keyword in firstJob_keywords:
         for second_keyword in secondJob_keywords:
-            total_similarity += nlp(first_keyword).similarity(nlp(second_keyword))
+            cur_similarity = nlp(first_keyword).similarity(nlp(second_keyword))
+            print first_keyword + " " + second_keyword + ":" + str(cur_similarity)
+            total_similarity += cur_similarity
     avg_similarity = total_similarity/total_size
     if(avg_similarity > threshold):
         print(avg_similarity)
@@ -23,14 +27,15 @@ def similarity_between_two_jobs(firstJob_keywords, secondJob_keywords, threshold
 
 def main():
     # get keywords
-    # keywords = textProcessing.get_top_keywords(5)
-    # for jobs in keywords:
-    #     print(jobs)
-    #     print([val for val in keywords[jobs]])
+    keywords = textProcessing.get_top_keywords(5)
+    for jobs in keywords:
+        print(jobs)
+        print([val for val in keywords[jobs]])
 
     firstJob_keywords =  [u'vk', u'facebook', u'script', u'project', u'viber']
     secondJob_keywords = [u'media', u'social', u'instagram', u'b2c', u'twitter']
-    threshold = 0.3 #need modify
+    threshold = 0.3 # need modify
+    #TODO: compare all dict values
     similarity_between_two_jobs(firstJob_keywords, secondJob_keywords, threshold)
 
 
