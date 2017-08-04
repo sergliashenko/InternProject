@@ -7,7 +7,7 @@ from nltk.stem.porter import *
 from nltk.corpus import stopwords
 
 # dir with .json files
-DIR_PATH = "D:\ParserUpWork\data_raw"
+DIR_PATH = ".\data_raw"
 
 def count_tf(term, full_text, count_terms_in_text):
     count_term = full_text.count(term)
@@ -51,7 +51,7 @@ def find_all_key_words(jobs_data):
  en_stopwords.extend(extend_list)
  filter_tokens = []
  for line in tokens:
-     filter_tokens.append([item.lower() for item in line if item.lower not in en_stopwords and len(item) > 2 and not item.isdigit()])
+     filter_tokens.append([item.lower() for item in line if item.lower() not in en_stopwords and len(item) > 2 and not item.isdigit()])
 
  # 3.Stemming
  #After Stemming was corrupted some words. For example: machine->machin, everyone->everyon, etc.

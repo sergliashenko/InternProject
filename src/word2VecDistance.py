@@ -13,7 +13,7 @@ def similarity_between_two_vacancies(firstVacancies_keywords, secondVacancies_ke
             cur_similarity = nlp(first_keyword).similarity(nlp(second_keyword))
             #check if word2vec knows about keyword
             if cur_similarity == 0.0:
-                print("Word2Vec don't know about " + first_keyword + " vs " + second_keyword)
+                print(first_keyword + " vs " + second_keyword + " Word2Vec don't know about this words")
                 total_size -= 1    #In order not to spoil the evaluation
             else:
                 print(first_keyword + " " + second_keyword + ":" + str(cur_similarity))
@@ -23,7 +23,6 @@ def similarity_between_two_vacancies(firstVacancies_keywords, secondVacancies_ke
     else:
         print("False " + str(0.0))
         return False
-
     if(avg_similarity > threshold):
         print("True: " + str(avg_similarity))
         return True
