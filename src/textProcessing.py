@@ -3,11 +3,11 @@ import json
 import os
 import math
 from nltk import word_tokenize
-from nltk.stem.porter import *
+from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
 # dir with .json files
-DIR_PATH = ".\data_raw"
+DIR_PATH = "D:\ParserUpWork\data_raw"
 
 def count_tf(term, full_text, count_terms_in_text):
     count_term = full_text.count(term)
@@ -55,14 +55,19 @@ def find_all_key_words(jobs_data):
 
  # 3.Stemming
  #After Stemming was corrupted some words. For example: machine->machin, everyone->everyon, etc.
- stemm = ["0"] * jobs_count
- stemmer = PorterStemmer()
- for i in range(jobs_count):
-    stemm[i] = [stemmer.stem(token) for token in filter_tokens[i]]
+ # stemm = ["0"] * jobs_count
+ # stemmer = PorterStemmer()
+ # for i in range(jobs_count):
+ #    stemm[i] = [stemmer.stem(token) for token in filter_tokens[i]]
+
+ lemms = []
+ lemmatizer = WordNetLemmatizer()
+ for token in filter_tokens:
+     lemms.append([lemmatizer.lemmatize(lemma) for lemma in token])
 
  # 4.TF
  tf = []
- for line in stemm:
+ for line in lemms:
     count_terms_in_text = len(line)
     tf.append([count_tf(term, line, count_terms_in_text) for term in line])
 
@@ -72,9 +77,9 @@ def find_all_key_words(jobs_data):
  doc_counter = 0
  for i in range(jobs_count):
      del tmp_list[:]
-     for word in range(len(stemm[i])):
+     for word in range(len(lemms[i])):
          if tf[i][word] > 0:
-             doc_counter = count_doc_with_word(stemm[i][word], stemm)
+             doc_counter = count_doc_with_word(lemms[i][word], lemms)
              tmp_list.append(math.log(jobs_count/doc_counter))
      idf[i] = tmp_list[:]
 
@@ -83,9 +88,9 @@ def find_all_key_words(jobs_data):
  tfidf = ["0"] * jobs_count
  for i in range(jobs_count):
      dict_for_page.clear()
-     for j in range(len(stemm[i])):
+     for j in range(len(lemms[i])):
          # Make dict with word and tf-idf
-         dict_for_page[stemm[i][j]] = tf[i][j] * idf[i][j]
+         dict_for_page[lemms[i][j]] = tf[i][j] * idf[i][j]
      tfidf[i] = dict_for_page.copy()
 
  # 7.Sorted key-words
