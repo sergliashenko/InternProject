@@ -22,21 +22,32 @@ def similarity_between_two_vacancies(firstVacancies_keywords, secondVacancies_ke
         avg_similarity = total_similarity/total_size
     else:
         print("False " + str(0.0))
-        return False
+        return 0
+        #return False
     if(avg_similarity > threshold):
         print("True: " + str(avg_similarity))
-        return True
+        return avg_similarity
+        #return True
     else:
         print("False " + str(avg_similarity))
-        return False
+        return avg_similarity
+        #return False
 
 #count the similarity between all combination of vacancies(input data of keywords and threshold)
 def similarity_for_all_vacancies(keywords_data, threshold):
+    sim_matrix = []
+    tmp = []
     for first_id, firstVacancies_keywords in keywords_data.items():
+        del tmp[:]
         for second_id, secondVacancies_keywords in keywords_data.items():
             if(first_id != second_id):
                 print("Similarity " + first_id + " vs " + second_id + ":")
-                similarity_between_two_vacancies(firstVacancies_keywords, secondVacancies_keywords, threshold)
+                tmp.append(similarity_between_two_vacancies(firstVacancies_keywords, secondVacancies_keywords, threshold))
+            else:
+                tmp.append(0)
+        sim_matrix.append(tmp[:])
+    return sim_matrix
+
 
 def main():
     # get keywords
