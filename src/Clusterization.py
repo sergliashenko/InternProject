@@ -13,8 +13,8 @@ def main():
     # X = StandardScaler().fit_transform(matrix)
     for i in range(5, 30):
         #TODO: add loop min_samples
-        print i
-        print "eps" + str(float(i)/100)
+        print(i)
+        print("eps" + str(float(i)/100))
         db = DBSCAN(metric="precomputed", eps=float(i)/100, min_samples=2)
         y_db = db.fit_predict(matrix)
         print(y_db)

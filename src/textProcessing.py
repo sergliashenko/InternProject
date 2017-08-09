@@ -7,7 +7,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
 # dir with .json files
-DIR_PATH = "/Users/skondrat/repo/ParserUpWork/data_raw"
+DIR_PATH = "D:\ParserUpWork\data_raw"
 
 def count_tf(term, full_text, count_terms_in_text):
     count_term = full_text.count(term)
@@ -44,24 +44,24 @@ def find_all_key_words(jobs_data):
      tokens.append(word_tokenize(v[0]["Job name"]) + word_tokenize(v[0]["Job description"]))
 
  # 2.Filtering
- # Delete stop words, words which length <= 2 and digits
- # Switch all words to lower case
  en_stopwords = stopwords.words("english")
  extend_list = ["http", "https"]
  en_stopwords.extend(extend_list)
  filter_tokens = []
  for line in tokens:
+     for word in line:
+         if word == "c++" or word == "C++":
+             tokens.insert(tokens.index(word), "cplusplus")
+         # Delete all symbol which not letter or number
+         line[line.index(word)] = "".join([letter for letter in word if letter.isalnum()])
+         # Delete url
+         if word.startswith("www.") or word.endswith(".com"):
+             line.remove(word)
+     # Delete stop words, words which length <= 2 and digits
+     # Switch all words to lower case
      filter_tokens.append([item.lower() for item in line if item.lower() not in en_stopwords and len(item) > 2 and not item.isdigit()])
 
-    #TODO Remove all symbols which are not letter or number 
-
- # 3.Stemming
- #After Stemming was corrupted some words. For example: machine->machin, everyone->everyon, etc.
- # stemm = ["0"] * jobs_count
- # stemmer = PorterStemmer()
- # for i in range(jobs_count):
- #    stemm[i] = [stemmer.stem(token) for token in filter_tokens[i]]
-
+ # 3.Lemmatization
  lemms = []
  lemmatizer = WordNetLemmatizer()
  for token in filter_tokens:
