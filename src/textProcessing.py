@@ -7,7 +7,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
 # dir with .json files
-DIR_PATH = "D:\ParserUpWork\data_raw"
+DIR_PATH = "/Users/skondrat/repo/ParserUpWork/data_raw"
 
 def count_tf(term, full_text, count_terms_in_text):
     count_term = full_text.count(term)
@@ -52,6 +52,8 @@ def find_all_key_words(jobs_data):
  filter_tokens = []
  for line in tokens:
      filter_tokens.append([item.lower() for item in line if item.lower() not in en_stopwords and len(item) > 2 and not item.isdigit()])
+
+    #TODO Remove all symbols which are not letter or number 
 
  # 3.Stemming
  #After Stemming was corrupted some words. For example: machine->machin, everyone->everyon, etc.

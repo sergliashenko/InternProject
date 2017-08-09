@@ -10,9 +10,15 @@ def main():
     threshold = 0.3  # need modify
     matrix = word2VecDistance.similarity_for_all_vacancies(keywords, threshold)
 
-    X = StandardScaler().fit_transform(matrix)
-    db = DBSCAN(eps=0.3, min_samples=2).fit(X)
-    print(db.labels_)
+    # X = StandardScaler().fit_transform(matrix)
+    for i in range(5, 30):
+        #TODO: add loop min_samples
+        print i
+        print "eps" + str(float(i)/100)
+        db = DBSCAN(metric="precomputed", eps=float(i)/100, min_samples=2)
+        y_db = db.fit_predict(matrix)
+        print(y_db)
+        #TODO print clustered docs
 
 
 
