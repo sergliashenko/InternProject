@@ -1,3 +1,6 @@
 .idea/*
 src/__pycache__/*
 src/__init__.pyc
+src/textProcessing.pyc
+src/uwApiParser.pyc
+src/uwHtmlParser.pyc
