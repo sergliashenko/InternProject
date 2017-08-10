@@ -46,17 +46,21 @@ def find_all_key_words(jobs_data):
  # 2.Filtering
  en_stopwords = stopwords.words("english")
  extend_list = ["http", "https"]
+ leng_list = ["c++", "C++"]  #if c#, R
  en_stopwords.extend(extend_list)
  filter_tokens = []
  for line in tokens:
      for word in line:
-         if word == "c++" or word == "C++":
-             tokens.insert(tokens.index(word), "cplusplus")
-         # Delete all symbol which not letter or number
-         line[line.index(word)] = "".join([letter for letter in word if letter.isalnum()])
-         # Delete url
-         if word.startswith("www.") or word.endswith(".com"):
+         if word in leng_list:
+             let_index = line.index(word)
              line.remove(word)
+             line.insert(let_index, "cplusplus")
+         # Delete url
+         elif word.startswith("//www.") or word.endswith(".com"):
+             line.remove(word)
+         else:
+             # Delete all symbol which not letter or number
+             line[line.index(word)] = "".join([letter for letter in word if letter.isalnum()])
      # Delete stop words, words which length <= 2 and digits
      # Switch all words to lower case
      filter_tokens.append([item.lower() for item in line if item.lower() not in en_stopwords and len(item) > 2 and not item.isdigit()])
