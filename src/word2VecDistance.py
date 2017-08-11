@@ -13,10 +13,10 @@ def similarity_between_two_vacancies(firstVacancies_keywords, secondVacancies_ke
             cur_similarity = nlp(first_keyword).similarity(nlp(second_keyword))
             #check if word2vec knows about keyword
             if cur_similarity == 0.0:
-                print(first_keyword + " vs " + second_keyword + " Word2Vec don't know about this words")
+                # print(first_keyword + " vs " + second_keyword + " Word2Vec don't know about this words")
                 total_size -= 1    #In order not to spoil the evaluation
             else:
-                print(first_keyword + " " + second_keyword + ":" + str(cur_similarity))
+                # print(first_keyword + " " + second_keyword + ":" + str(cur_similarity))
                 total_similarity += cur_similarity
     if total_size != 0:
         avg_similarity = total_similarity/total_size
@@ -25,11 +25,11 @@ def similarity_between_two_vacancies(firstVacancies_keywords, secondVacancies_ke
         return 0
         #return False
     if(avg_similarity > threshold):
-        print("True: " + str(avg_similarity))
+        # print("True: " + str(avg_similarity))
         return avg_similarity
         #return True
     else:
-        print("False " + str(avg_similarity))
+        # print("False " + str(avg_similarity))
         return avg_similarity
         #return False
 
@@ -41,7 +41,7 @@ def similarity_for_all_vacancies(keywords_data, threshold):
         del tmp[:]
         for second_id, secondVacancies_keywords in keywords_data.items():
             if(first_id != second_id):
-                print("Similarity " + first_id + " vs " + second_id + ":")
+                # print("Similarity " + first_id + " vs " + second_id + ":")
                 tmp.append(similarity_between_two_vacancies(firstVacancies_keywords, secondVacancies_keywords, threshold))
             else:
                 tmp.append(0)
