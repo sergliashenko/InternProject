@@ -4,7 +4,7 @@ import os
 from bs4 import BeautifulSoup
 
 MASK_URL = "https://www.upwork.com/o/jobs/browse/?page="
-JSON_PATH = "./../JSON_data/"
+JSON_PATH = "./JSON_data/"
 
 def get_html(url):
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -74,7 +74,6 @@ def parser_for_one_page(html):
         client_table = job_soup.find_all("div", class_="col-md-3")
         for client_data in client_table:
             if "About the Client" in client_data.text:
-                #client_data = client_table[j].contents
                 size = len(client_data)
                 client_info = []
                 for i in range(7,size):
