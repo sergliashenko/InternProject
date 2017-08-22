@@ -7,7 +7,7 @@ MASK_URL = "https://www.upwork.com/o/jobs/browse/?page="
 JSON_PATH = "./JSON_data/"
 
 def get_html(url):
-    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'}, unverifiable=True)
     page = urllib.request.urlopen(req)
     return page.read()
 
@@ -90,15 +90,15 @@ def parser_for_one_page(html):
         with open(JSON_PATH + job_id + ".json", "w", encoding='utf-8') as file:
             json.dump(project, file, indent=2, ensure_ascii=False)
 
-
 def parser_runner(direction):
     # create dir where will be save json file
     if not os.path.exists(JSON_PATH):
         os.mkdir(JSON_PATH)
     #direction = "Python Machine Learning"
     number_of_page = 1
-    path = MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")
-    pages = get_jobs_count(get_html(MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")))
+    mask_str = "&q=" + direction.replace(" ", "%20")
+    path = MASK_URL + str(number_of_page) + mask_str
+    pages = get_jobs_count(get_html(path))
     print("Jobs found for direction: " + '"' + direction + '"' + ": " + str(pages))
 
     #Find count of page
@@ -112,7 +112,7 @@ def parser_runner(direction):
 
     for number_of_page in range(1, pages + 1):
         print("At now parse pages: " + str(number_of_page))
-        parser_for_one_page(get_html(MASK_URL + str(number_of_page) + "&q=" + direction.replace(" ", "%20")))
+        parser_for_one_page(get_html(MASK_URL + str(number_of_page) + mask_str))
 
 def main():
     parser_runner("Node JS")
