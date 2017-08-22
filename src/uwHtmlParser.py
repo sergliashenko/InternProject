@@ -36,6 +36,12 @@ def pars_skills_field(skills_data):
             skill+=","
     return skill
 
+def check_on_NonType(in_obj):
+    if in_obj != None:
+        return in_obj.text
+    else:
+        return ""
+
 def parser_for_one_page(html):
     #find all projects
     page_soup = BeautifulSoup(html, "html.parser")
@@ -66,21 +72,23 @@ def parser_for_one_page(html):
             for content in job_table[1].contents[9].contents:
                 if content != "\n":
                     if "Details" in content.text:
-                        project["Job details"] = " ".join(content.contents[3].text.replace("\n", " ").split())
-                        content_details = content.contents[5].contents[1].contents
-                        size = len(content_details)
-                        additional_details = []
-                        for details in content_details:
-                            if type(details) != NavigableString:
-                                if len(details.attrs) != 0 and "data-ng-controller" in details.attrs:
-                                    skills_data = details.contents[3].attrs.get("data-ng-init")
-                                    skill = pars_skills_field(skills_data)
-                                    additional_details.append(details.text.strip() + skill)
-                                elif details.text != "":
-                                    additional_details.append(details.text.strip())
-                        project["Additional_details"] = additional_details
-
-                        #project["Other skills"] = other_skills
+                        lable_info = content.find("span", class_="label label-info")
+                        job_details = content.find("p",class_="break")
+                        project["Job details"] = " ".join((check_on_NonType(lable_info) + check_on_NonType(job_details)).replace("\n", " ").split())
+                        content_details = content.find("div", id="form")
+                        if content_details != None:
+                            content_details.contents
+                            size = len(content_details)
+                            additional_details = []
+                            for details in content_details:
+                                if type(details) != NavigableString:
+                                    if len(details.attrs) != 0 and "data-ng-controller" in details.attrs:
+                                        skills_data = details.contents[3].attrs.get("data-ng-init")
+                                        skill = pars_skills_field(skills_data)
+                                        additional_details.append(details.text.strip() + skill)
+                                    elif details.text != "":
+                                        additional_details.append(details.text.strip())
+                            project["Additional_details"] = additional_details
                     elif "Activity on this Job" in content.text:
                         activity = []
                         cont_activity = content.contents[1].contents[1].contents
@@ -143,7 +151,8 @@ def parser_runner(direction):
         parser_for_one_page(get_html(MASK_URL + str(number_of_page) + mask_str))
 
 def main():
-    parser_runner("Ruby on Rails")
+    direction = "Python Machine Learning"
+    parser_runner(direction)
 
 
 if __name__ == "__main__":
