@@ -1,7 +1,7 @@
 import urllib.request
 import json
 import os
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 
 MASK_URL = "https://www.upwork.com/o/jobs/browse/?page="
 JSON_PATH = "./JSON_data/"
@@ -21,6 +21,19 @@ def get_jobs_count(html):
             jobs_found = i
     return int(jobs_found)
 
+def pars_skills_field(skills_data):
+    start_idx = 0
+    size = len(skills_data)
+    skill = ""
+    while start_idx != -1:
+        start_idx = skills_data.find("prettyName", start_idx)
+        if start_idx != -1:
+            for i in range(start_idx, size):
+                while(skills_data[i] != "}"):
+                    skill += skills_data[i]
+            skill+=","
+    return skill
+
 def parser_for_one_page(html):
     #find all projects
     page_soup = BeautifulSoup(html, "html.parser")
@@ -29,6 +42,7 @@ def parser_for_one_page(html):
 
     for job in jobs_list:
         job_id = job.get("data-key")
+        job_id = "~01426cbdad5c481ddb"
         job_link = "https://www.upwork.com/o/jobs/job/_" + job_id
         job_soup = BeautifulSoup(get_html(job_link), "html.parser")
         #information about job
@@ -39,7 +53,6 @@ def parser_for_one_page(html):
             second_direction = job_table[1].contents[3].text
             posted_time = job_table[1].contents[5].text
             some_additional_info = job_table[1].contents[7].text
-
             # push categories to dict
             project = {
                 "Job id": job_id,
@@ -52,7 +65,23 @@ def parser_for_one_page(html):
             for content in job_table[1].contents[9].contents:
                 if content != "\n":
                     if "Details" in content.text:
-                        project["Job details"] = " ".join(content.text.replace("\n", " ").split())
+                        project["Job details"] = " ".join(content.contents[3].text.replace("\n", " ").split())
+                        content_details = content.contents[5].contents[1].contents
+                        size = len(content_details)
+                        additional_details = []
+                        for details in content_details:
+                            if type(details) != NavigableString:
+                                if details.attr is not None:
+                                    skills_data = details.contents[3].attr.get("data-ng-init")
+                                    skill = pars_skills_field(skills_data)
+
+
+                                    additional_details.append(details.text.strip())
+
+                                additional_details.append(details.text.strip())
+                        project["Additional_details"] = additional_details
+
+                        #project["Other skills"] = other_skills
                     elif "Activity on this Job" in content.text:
                         activity = []
                         cont_activity = content.contents[1].contents[1].contents
