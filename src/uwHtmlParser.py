@@ -1,3 +1,4 @@
+#import urllib2
 import urllib.request
 import json
 import os
@@ -28,9 +29,10 @@ def pars_skills_field(skills_data):
     while start_idx != -1:
         start_idx = skills_data.find("prettyName", start_idx)
         if start_idx != -1:
-            for i in range(start_idx, size):
-                while(skills_data[i] != "}"):
-                    skill += skills_data[i]
+            start_idx += 12 # 12 is size of string prettyName":
+            while(skills_data[start_idx] != "}"):
+                skill += skills_data[start_idx]
+                start_idx += 1
             skill+=","
     return skill
 
@@ -42,7 +44,6 @@ def parser_for_one_page(html):
 
     for job in jobs_list:
         job_id = job.get("data-key")
-        job_id = "~01426cbdad5c481ddb"
         job_link = "https://www.upwork.com/o/jobs/job/_" + job_id
         job_soup = BeautifulSoup(get_html(job_link), "html.parser")
         #information about job
@@ -71,14 +72,12 @@ def parser_for_one_page(html):
                         additional_details = []
                         for details in content_details:
                             if type(details) != NavigableString:
-                                if details.attr is not None:
-                                    skills_data = details.contents[3].attr.get("data-ng-init")
+                                if len(details.attrs) != 0 and "data-ng-controller" in details.attrs:
+                                    skills_data = details.contents[3].attrs.get("data-ng-init")
                                     skill = pars_skills_field(skills_data)
-
-
+                                    additional_details.append(details.text.strip() + skill)
+                                elif details.text != "":
                                     additional_details.append(details.text.strip())
-
-                                additional_details.append(details.text.strip())
                         project["Additional_details"] = additional_details
 
                         #project["Other skills"] = other_skills
@@ -144,7 +143,7 @@ def parser_runner(direction):
         parser_for_one_page(get_html(MASK_URL + str(number_of_page) + mask_str))
 
 def main():
-    parser_runner("Node JS")
+    parser_runner("Ruby on Rails")
 
 
 if __name__ == "__main__":
