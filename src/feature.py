@@ -37,9 +37,6 @@ def get_job_direction(json_data):
 def get_job_posted_time(json_data):
     return json_data.get("Posted time")
 
-def get_job_direction(json_data):
-    return json_data.get("Job direction")
-
 def get_job_additional_info(json_data):
     return json_data.get("Additional information")
 
@@ -58,8 +55,11 @@ def get_job_skills(json_data):
         else:
             return("In this vacancy, the field of skills is empty")
 
-def get_job_additional_details(json_data):
+def get_activity_on_job(json_data):
     return json_data.get("Activity on this Job")
+
+def get_client_info(json_data):
+    return json_data.get("About the client")
 
 
 
