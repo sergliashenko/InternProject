@@ -35,6 +35,4 @@ def filter_smollest_price(json_data):
     if avg_hourly_rate != None:
         if avg_hourly_rate < 3.0:
             return False
-        else:
-            return True
     return True
