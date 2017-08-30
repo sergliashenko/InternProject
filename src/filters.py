@@ -8,7 +8,6 @@ def filter_check_client_country(json_data):
     """
     excluded_country = ["India", "Turkey"]
     client_info = feature.get_client_info(json_data)
-    #TODO if country info not exist
     if excluded_country in client_info:
         return False
     else:
@@ -38,6 +37,4 @@ def filter_smollest_price(json_data):
             return False
         else:
             return True
-    else:
-        return # TODO if avg is None
-    
+    return True
