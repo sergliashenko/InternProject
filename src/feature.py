@@ -139,17 +139,31 @@ def get_value_of_hours_per_week(json_data):
     additional_info = get_job_additional_info(json_data)
     if additional_info is None:
         return None
-    if "Less than 30 hrs/week" in additional_info:
-        return "Less than 30 hrs/week"
-    elif "More than 30 hrs/week" in additional_info:
-        return "More than 30 hrs/week"
-    else:
+    hours_per_week_constant = ["Less than 30 hrs/week", "More than 30 hrs/week"]
+    for value in hours_per_week_constant:
+        if value in additional_info:
+            return value
+    return None
+
+def get_project_length(json_data):
+    """
+    Getting duration of project
+    :param json_data: dict
+    :return: str or NoneType
+    """
+    additional_info = get_job_additional_info(json_data)
+    if additional_info is None:
         return None
+    project_len_constant = ["Less than 1 week", "Less than 1 month", "1 to 3 months", "3 to 6 months", "More than 3 months", "More than 6 months"]
+    for len in project_len_constant:
+        if len in additional_info:
+            return len
+    return None
 
 
 def main():
-    json_data = get_text_from_json_files("~01a98cdf8c74d3cbc7.json")
-    tmp = get_value_of_hours_per_week(json_data)
+    json_data = get_text_from_json_files("~01a92a40c512796b91.json")
+    tmp = get_project_length(json_data)
     pass
 
 
