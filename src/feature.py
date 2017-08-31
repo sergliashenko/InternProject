@@ -1,5 +1,6 @@
 import os
 import json
+import typing
 
 # dir with .json files
 DIR_PATH = ".\JSON_data/"
@@ -24,31 +25,50 @@ def get_text_from_json_files(json_file_name):
     with open(DIR_PATH + json_file_name, "r", encoding='utf-8') as file:
         return json.load(file)
 
-def get_job_id(json_data):
+def get_job_id(json_data: dict) -> str:
     return json_data.get("Job id")
 
-def get_job_link(json_data):
+def get_job_link(json_data: dict) -> str:
     return json_data.get("Job link")
 
-def get_job_name(json_data):
+def get_job_name(json_data: dict) -> str:
     return json_data.get("Job name")
 
-def get_job_direction(json_data):
+def get_job_direction(json_data: dict) -> typing.Union[str,None]:
     return json_data.get("Job direction", None)
 
-def get_job_posted_time(json_data):
-    return json_data.get("Posted time", None)
+def get_posted_time(json_data: dict) -> typing.Union[float, None]:
+    """
+    Getting float value of posted time in days if possible, None - other wise
+    :param json_data:dict,incoming data from JSON
+    :return: float, NoneType
+    """
+    if not "Posted time" in json_data:
+        return None
+    posted_time = json_data["Posted time"]
+    parsed_posted_time = posted_time.replace("Posted","").replace("ago","").strip()
+    value, quantity = parsed_posted_time.split(" ")
+    value = float(value)
+    quantity = quantity.strip()
+    if quantity == "hours":
+        return value / 24.0
+    elif quantity == "days":
+        return value
+    elif quantity == "months":
+        return value * 30.0
+    else:
+        return None
 
-def get_job_additional_info(json_data):
+def get_job_additional_info(json_data: dict) -> typing.Union[str, None]:
     return json_data.get("Additional information", None)
 
-def get_job_details(json_data):
+def get_job_details(json_data: dict) -> typing.Union[str, None]:
     return json_data.get("Job details", None)
 
-def get_job_additional_details(json_data):
+def get_job_additional_details(json_data: dict) -> typing.Union[list, None]:
     return json_data.get("Additional_details", None)
 
-def get_job_skills(json_data):
+def get_job_skills(json_data: dict) -> typing.Union[list, None]:
     """
     Getting value of field "Other Skills", if this field not exist return None
     :param json_data: dict
@@ -62,7 +82,7 @@ def get_job_skills(json_data):
             idx = data.find(":") + 1
             return(data[idx:len(data)].replace('"', "").split(","))
 
-def get_project_type(json_data):
+def get_project_type(json_data: dict) ->typing.Union[str, None]:
     """
     Getting value of field "Project type", if this field not exist return None
     :param json_data: dict
@@ -76,13 +96,13 @@ def get_project_type(json_data):
             idx = data.find(":") + 1
             return (data[idx:len(data)])
 
-def get_activity_on_job(json_data):
+def get_activity_on_job(json_data: dict) -> typing.Union[list, None]:
     return json_data.get("Activity on this Job", None)
 
-def get_client_info(json_data):
+def get_client_info(json_data: dict) -> typing.Union[list, None]:
     return json_data.get("About the client", None)
 
-def get_avg_hourly_rate(json_data):
+def get_avg_hourly_rate(json_data: dict) -> typing.Union[float, None]:
     """
     Getting avg hourly rate if exist this field, in other case return None
     :param json_data: dict
@@ -98,7 +118,7 @@ def get_avg_hourly_rate(json_data):
             return float(avg_hourly_rate)
     return None
 
-def get_job_type(json_data):
+def get_job_type(json_data: dict) -> typing.Union[str, None]:
     """
     Getting Job type if this field not exist return None
     :param json_data: dict
@@ -114,7 +134,7 @@ def get_job_type(json_data):
     else:
         return None
 
-def get_client_history(json_data):
+def get_client_history(json_data: dict) -> typing.Union[int, None]:
     """
     Getting count of Hires. If not exist Hires return zero
     :param json_data: dict
@@ -130,7 +150,7 @@ def get_client_history(json_data):
                     return int(el)
     return 0
 
-def get_value_of_hours_per_week(json_data):
+def get_value_of_hours_per_week(json_data: dict) ->typing.Union[str, None]:
     """
     Getting working time per week
     :param json_data: dict
@@ -145,7 +165,7 @@ def get_value_of_hours_per_week(json_data):
             return value
     return None
 
-def get_project_length(json_data):
+def get_project_length(json_data: dict) -> typing.Union[str, None]:
     """
     Getting duration of project
     :param json_data: dict
@@ -162,8 +182,8 @@ def get_project_length(json_data):
 
 
 def main():
-    json_data = get_text_from_json_files("~01a92a40c512796b91.json")
-    tmp = get_project_length(json_data)
+    json_data = get_text_from_json_files("~01a601ddb75eaea823.json")
+    tmp = get_proposals(json_data)
     pass
 
 
