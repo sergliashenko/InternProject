@@ -80,7 +80,7 @@ def get_job_skills(json_data: dict) -> typing.Union[list, None]:
     for data in additioanl_details:
         if "Other Skills" in data:
             idx = data.find(":") + 1
-            return(data[idx:len(data)].replace('"', "").split(","))
+            return(data[idx:len(data) - 1].replace('"', "").split(","))
 
 def get_project_type(json_data: dict) ->typing.Union[str, None]:
     """
@@ -94,7 +94,7 @@ def get_project_type(json_data: dict) ->typing.Union[str, None]:
     for data in additioanl_details:
         if "Project Type" in data:
             idx = data.find(":") + 1
-            return (data[idx:len(data)])
+            return (data[idx:len(data)].strip())
 
 def get_activity_on_job(json_data: dict) -> typing.Union[list, None]:
     return json_data.get("Activity on this Job", None)
@@ -182,9 +182,7 @@ def get_project_length(json_data: dict) -> typing.Union[str, None]:
 
 
 def main():
-    json_data = get_text_from_json_files("~01a601ddb75eaea823.json")
-    tmp = get_proposals(json_data)
-    pass
+    json_data = get_text_from_json_files("~01a3f9faf308d8847a.json")
 
 
 if __name__ == "__main__":
