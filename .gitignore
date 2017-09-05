@@ -4,3 +4,8 @@ src/__init__.pyc
 src/textProcessing.pyc
 src/uwApiParser.pyc
 src/uwHtmlParser.pyc
+src/.cache/
+
+*.json
+!src/resources/
+venv

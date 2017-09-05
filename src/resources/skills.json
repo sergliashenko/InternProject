@@ -1,0 +1,7 @@
+{
+  "ruby": ["ruby","ruby on rails"],
+  "c++": ["c++", "c plus plus"],
+  "html": ["html"],
+  "ionic": ["ionic"],
+  "full stack": ["full stack"]
+}
