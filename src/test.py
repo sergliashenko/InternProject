@@ -15,7 +15,7 @@ def test_get_len_job_detail():
     len_job_detail = features.get_len_job_detail(json_data)
 
     # assert
-    assert len_job_detail == 1140
+    assert len_job_detail == 1153
 
 
 def test_get_posted_time():
@@ -74,3 +74,10 @@ def test_skills():
     assert skills == ['html']
 
 
+def test_find_key_words():
+    with open("resources/test_data.json") as f:
+        json_data = json.load(f)
+
+    find_key = features.get_find_key_words(json_data)
+
+    assert find_key == ["bug"]

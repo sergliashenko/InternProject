@@ -3,6 +3,8 @@ import typing
 
 with open("resources\skills.json") as f:
     SKILLS = json.load(f)
+with open("resources\key_words.json") as f:
+    key_words = json.load(f)
 
 
 def get_len_job_detail(json_data: dict) -> typing.Union[int, None]:
@@ -143,7 +145,36 @@ def normalise_string(string: str) -> str:
     return string.lower()
 
 
+def get_find_key_words(json_data: dict) -> list:
+    """
+    Finding key words in key_words.json and load it to list
+    :param json_data: dict
+    :return: list
+    """
+    result = []
+    for key, value in json_data.items():
+        if type(value) is str:
+            result.extend(get_key_words_from_string(value))
+        if type(value) is list:
+            for list_value in value:
+                result.extend(get_key_words_from_string(list_value))
+    return list(set(result))
 
+
+def get_key_words_from_string(string: str) -> list:
+    """
+    Parsing string and load it to list
+    :return: list
+    """
+    string = normalise_string(string)
+    result = []
+    for key in key_words:
+        values = key_words[key]
+        for i in values:
+            if i in string:
+                result.append(key)
+
+    return result
 
 
 
