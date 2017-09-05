@@ -96,11 +96,11 @@ def get_proposals(json_data: dict) -> typing.Union[list, None]:
     parsing_proposals = proposals.replace("Proposals: ","")
     if "to" in parsing_proposals:
         result = parsing_proposals.split("to")
-        return map(int, result)
+        return list(map(int, result))
     elif "+" in parsing_proposals:
         result = parsing_proposals.replace("+")
         result = [result, 9999]
-        return map(int, result)
+        return list(map(int, result))
 
 
 def get_skills(json_data: dict) -> list:

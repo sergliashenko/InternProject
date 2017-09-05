@@ -7,5 +7,5 @@ src/uwHtmlParser.pyc
 src/.cache/
 
 *.json
-!src/resources
+!src/resources/
 venv

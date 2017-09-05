@@ -18,6 +18,16 @@ def test_get_len_job_detail():
     assert len_job_detail == 1153
 
 
+def test_get_proposals():
+
+    with open(r"resources\test_data.json") as f:
+        json_data = json.load(f)
+
+    proposals = features.get_proposals(json_data)
+
+    assert proposals == [10, 50]
+
+
 def test_get_posted_time():
     with open("resources/test_data.json") as f:
         json_data = json.load(f)
@@ -68,10 +78,9 @@ def test_skills_from_string():
 def test_skills():
     with open("resources/test_data.json") as f:
         json_data = json.load(f)
-
     skills = features.get_skills(json_data)
 
-    assert skills == ['html']
+    assert set(skills) == {'html', 'full stack'}
 
 
 def test_find_key_words():

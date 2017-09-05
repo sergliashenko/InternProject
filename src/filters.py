@@ -11,13 +11,3 @@ def filter_actuality_of_vacancy(json_data):
         return False
     else:
         return True
-
-
-def filter_find_key_words(json_data):
-    """
-
-    :param json_data:
-    :return:
-    """
-
-
