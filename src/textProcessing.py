@@ -9,76 +9,84 @@ from nltk.corpus import stopwords
 # dir with .json files
 DIR_PATH = ".\JSON_data/"
 
+
 def count_tf(term, full_text, count_terms_in_text):
     count_term = full_text.count(term)
-    return count_term/count_terms_in_text
+    return count_term / count_terms_in_text
+
 
 def count_doc_with_word(word, pages):
- counter = 0
- for list_of_word in pages:
-     if word in list_of_word:
-         counter +=1
- return counter
+    counter = 0
+    for list_of_word in pages:
+        if word in list_of_word:
+            counter += 1
+    return counter
+
 
 def find_json_file_in_dir(path):
- files = os.listdir(path)
- # filter only .json type
- jsons = filter(lambda x: x.endswith('.json'), files)
- return jsons
+    files = os.listdir(path)
+    # filter only .json type
+    jsons = filter(lambda x: x.endswith('.json'), files)
+    return jsons
+
 
 def get_text_from_files(json_files_pull):
- data = {}
- for file_name in json_files_pull:
-    with open(DIR_PATH + file_name, "r", encoding='utf-8') as file:
-        data[file_name] = json.load(file)
- return data
+    data = {}
+    for file_name in json_files_pull:
+        with open(DIR_PATH + file_name, "r", encoding='utf-8') as file:
+            data[file_name] = json.load(file)
+    return data
+
 
 def find_all_key_words(jobs_data):
-    #upload pure text from json file
+    # upload pure text from json file
     filtering_data = {}
-    tmp_list = []
     excluded_tag = ["Job id", "Job link", "Posted time", "Activity on this Job", "About the client"]
-    for k,v in jobs_data.items():
-        del tmp_list[:]
-        for key,i in v.items():
+    for k, v in jobs_data.items():
+        tmp_string = ""
+        for key, i in v.items():
             if key not in excluded_tag:
-                tmp_list.append(i)
-        filtering_data[k] = tmp_list.copy()
+                if key != "Additional_details":
+                    tmp_string += i + "\n"
+                else:
+                    for details in i:
+                        tmp_string += details + "/n"
+        filtering_data[k] = tmp_string
 
-        #TODO itegrate filtering data to next algorithm
+        # TODO itegrate filtering data to next algorithm
 
 
 
 
-# 1.Tokenize
+    # 1.Tokenize
     jobs_count = len(jobs_data)
     tokens = []
     for v in jobs_data.values():
         for val in v.values():
             tokens.append(word_tokenize(val))
 
-
     # 2.Filtering
     en_stopwords = stopwords.words("english")
     extend_list = ["http", "https"]
     en_stopwords.extend(extend_list)
-    leng_list = ["c++", "C++"]  #if c#, R, JS
+    leng_list = ["c++", "C++"]  # if c#, R, JS
     filter_tokens = []
     for line in tokens:
-     for word in line:
-         if word in leng_list:
-             let_index = line.index(word)
-             line.remove(word)
-             line.insert(let_index, "cplusplus")
-         # Delete url
-         elif word.startswith("//www.") or word.endswith(".com"):
-             line.remove(word)
-         else:
-             # Delete all symbol which not letter or number
-             line[line.index(word)] = "".join([letter for letter in word if letter.isalnum()])
-     # Delete stop words, words which length <= 2 and digits
-     # Switch all words to lower case
-     filter_tokens.append([item.lower() for item in line if item.lower() not in en_stopwords and len(item) > 2 and not item.isdigit()])
+        for word in line:
+            if word in leng_list:
+                let_index = line.index(word)
+                line.remove(word)
+                line.insert(let_index, "cplusplus")
+            # Delete url
+            elif word.startswith("//www.") or word.endswith(".com"):
+                line.remove(word)
+            else:
+                # Delete all symbol which not letter or number
+                line[line.index(word)] = "".join([letter for letter in word if letter.isalnum()])
+        # Delete stop words, words which length <= 2 and digits
+        # Switch all words to lower case
+        filter_tokens.append([item.lower() for item in line if
+                              item.lower() not in en_stopwords and len(item) > 2 and not item.isdigit()])
 
     # 3.Lemmatization
     lemms = []
@@ -97,12 +105,12 @@ def find_all_key_words(jobs_data):
     tmp_list = []
     doc_counter = 0
     for i in range(jobs_count):
-     del tmp_list[:]
-     for word in range(len(lemms[i])):
-         if tf[i][word] > 0:
-             doc_counter = count_doc_with_word(lemms[i][word], lemms)
-             tmp_list.append(math.log(jobs_count/doc_counter))
-     idf[i] = tmp_list[:]
+        del tmp_list[:]
+        for word in range(len(lemms[i])):
+            if tf[i][word] > 0:
+                doc_counter = count_doc_with_word(lemms[i][word], lemms)
+                tmp_list.append(math.log(jobs_count / doc_counter))
+        idf[i] = tmp_list[:]
 
     # 6.TF-IDF
     dict_for_page = {}
@@ -118,7 +126,9 @@ def find_all_key_words(jobs_data):
     tfidf = [sorted(map_index.items(), key=lambda x: -x[1]) for map_index in tfidf]
     return tfidf
 
-    #N - number of key-word on the page
+    # N - number of key-word on the page
+
+
 def get_top_keywords(N):
     # list with text from all .json files
     data = get_text_from_files(find_json_file_in_dir(DIR_PATH))
@@ -137,7 +147,7 @@ def get_top_keywords(N):
             top_keywords_with_files_names[files_names[page]] = top_keywords[:]
         else:
             print("Value of N which you entered, greater than count of word in job number " + str(page) +
-               "\nWill be displayed maximum words in this job description. \nMaximum = " + str(page_size))
+                  "\nWill be displayed maximum words in this job description. \nMaximum = " + str(page_size))
             top_keywords = [key[0] for key in tfidf[page][:page_size]]
             top_keywords_with_files_names[files_names[page]] = top_keywords[:]
     return top_keywords_with_files_names
