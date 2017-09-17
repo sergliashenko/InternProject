@@ -1,6 +1,7 @@
 import os
 import json
 import typing
+from datetime import datetime, date
 
 # dir with .json files
 DIR_PATH = ".\JSON_data/"
@@ -11,7 +12,7 @@ with open("resources\key_words.json") as f:
     key_words = json.load(f)
 
 
-def get_len_job_detail(json_data: dict) -> typing.Union[int, None]:
+def get_len_job_detail(json_data: dict) -> typing.Optional[int]:
     """
     Getting numbers of symbols from job details, if Job details is empty - returning None
     :param json_data: dict. incoming data from ParserUpwork
@@ -23,7 +24,7 @@ def get_len_job_detail(json_data: dict) -> typing.Union[int, None]:
         return None
 
 
-def get_posted_time(json_data: dict) -> typing.Union[float, None]:
+def get_posted_time(json_data: dict) -> typing.Optional[float]:
     """
     Getting float value of posted time in days if possible, None - other wise
     :param json_data:dict,incoming data from JSON
@@ -47,7 +48,7 @@ def get_posted_time(json_data: dict) -> typing.Union[float, None]:
         return None
 
 
-def get_last_viewing(json_data: dict) -> typing.Union[float, None]:
+def get_last_viewing(json_data: dict) -> typing.Optional[float]:
     """
     Getting float value of last viewing by a client in days, if possible, None - other wise
 
@@ -80,7 +81,7 @@ def get_last_viewing(json_data: dict) -> typing.Union[float, None]:
         return None
 
 
-def get_proposals(json_data: dict) -> typing.Union[list, None]:
+def get_proposals(json_data: dict) -> typing.Optional[list]:
     """
     Getting number of proposals range.
     :param json_data:dict, incoming data from JSON file.
@@ -212,31 +213,31 @@ def get_job_name(json_data: dict) -> str:
     return json_data.get("Job name")
 
 
-def get_job_direction(json_data: dict) -> typing.Union[str, None]:
+def get_job_direction(json_data: dict) -> typing.Optional[str]:
     return json_data.get("Job direction", None)
 
 
-def get_job_additional_info(json_data: dict) -> typing.Union[str, None]:
+def get_job_additional_info(json_data: dict) -> typing.Optional[str]:
     return json_data.get("Additional information", None)
 
 
-def get_job_details(json_data: dict) -> typing.Union[str, None]:
+def get_job_details(json_data: dict) -> typing.Optional[str]:
     return json_data.get("Job details", None)
 
 
-def get_job_additional_details(json_data: dict) -> typing.Union[list, None]:
+def get_job_additional_details(json_data: dict) -> typing.Optional[list]:
     return json_data.get("Additional_details", None)
 
 
-def get_activity_on_job(json_data: dict) -> typing.Union[list, None]:
+def get_activity_on_job(json_data: dict) -> typing.Optional[list]:
     return json_data.get("Activity on this Job", None)
 
 
-def get_client_info(json_data: dict) -> typing.Union[list, None]:
+def get_client_info(json_data: dict) -> typing.Optional[list]:
     return json_data.get("About the client", None)
 
 
-def get_job_skills(json_data: dict) -> typing.Union[list, None]:
+def get_field_other_skills(json_data: dict) -> typing.Optional[list]:
     """
     Getting value of field "Other Skills", if this field not exist return None
     :param json_data: dict
@@ -251,7 +252,7 @@ def get_job_skills(json_data: dict) -> typing.Union[list, None]:
             return data[idx:len(data) - 1].replace('"', "").split(",")
 
 
-def get_project_type(json_data: dict) -> typing.Union[str, None]:
+def get_project_type(json_data: dict) -> typing.Optional[str]:
     """
     Getting value of field "Project type", if this field not exist return None
     :param json_data: dict
@@ -266,7 +267,7 @@ def get_project_type(json_data: dict) -> typing.Union[str, None]:
             return data[idx:len(data)].strip()
 
 
-def get_avg_hourly_rate(json_data: dict) -> typing.Union[float, None]:
+def get_avg_hourly_rate(json_data: dict) -> typing.Optional[float]:
     """
     Getting avg hourly rate if exist this field, in other case return None
     :param json_data: dict
@@ -283,7 +284,7 @@ def get_avg_hourly_rate(json_data: dict) -> typing.Union[float, None]:
     return None
 
 
-def get_job_type(json_data: dict) -> typing.Union[str, None]:
+def get_fixed_or_hourly(json_data: dict) -> typing.Optional[str]:
     """
     Getting Job type if this field not exist return None
     :param json_data: dict
@@ -300,9 +301,9 @@ def get_job_type(json_data: dict) -> typing.Union[str, None]:
         return None
 
 
-def get_client_history(json_data: dict) -> typing.Union[int, None]:
+def get_hired_by_the_client(json_data: dict) -> typing.Optional[int]:
     """
-    Getting count of Hires. If not exist Hires return zero
+    Getting count of Hires. If not exist Hires return 0
     :param json_data: dict
     :return: int or None
     """
@@ -317,7 +318,7 @@ def get_client_history(json_data: dict) -> typing.Union[int, None]:
     return 0
 
 
-def get_value_of_hours_per_week(json_data: dict) -> typing.Union[str, None]:
+def get_value_of_hours_per_week(json_data: dict) -> typing.Optional[str]:
     """
     Getting working time per week
     :param json_data: dict
@@ -333,7 +334,7 @@ def get_value_of_hours_per_week(json_data: dict) -> typing.Union[str, None]:
     return None
 
 
-def get_project_length(json_data: dict) -> typing.Union[str, None]:
+def get_project_length(json_data: dict) -> typing.Optional[str]:
     """
     Getting duration of project
     :param json_data: dict
@@ -350,8 +351,64 @@ def get_project_length(json_data: dict) -> typing.Union[str, None]:
     return None
 
 
+def get_n_of_freelancers(json_data: dict) -> typing.Optional[int]:
+    """
+    Getting value from field for example "Needs to hire 2 Freelancers" from Job details
+    This field not always specified in this case return 1
+    :param json_data: dict
+    :return: int or NoneType
+    """
+    job_details = get_job_details(json_data)
+    if job_details is None:
+        return None
+    find_str_const = "Needs to hire"
+    start_pos = job_details.find(find_str_const)
+    if start_pos != -1:
+        end_pos = job_details.find("Freelancers")
+        str_value = job_details[len(find_str_const): end_pos]
+        return int(str_value)
+    return 1
+
+
+def get_country(json_data: dict) -> typing.Optional[str]:
+    """
+    Getting customer's country. If this info not identified - return None
+    :param json_data: dict
+    :return: str or NoneType
+    """
+    client_info = get_client_info(json_data)
+    if client_info is None:
+        return None
+    for info in client_info:
+        if "AM" in info or "PM" in info:
+            # For example " 00:00 AM" size of this string is 9. We cut this from info
+            country = info[:-9]
+            return "".join(country)
+    return None
+
+
+def get_signup_date(json_data:dict) ->typing.Optional[date]:
+    """
+    Getting client's registered date in format "year-month-day"
+    :param json_data: dict
+    :return:
+    """
+    client_info = get_client_info(json_data)
+    if client_info is None:
+        return None
+    find_const = "Member Since"
+    for info in client_info:
+        if find_const in info:
+            info = info.replace(find_const, "").strip()
+            d = datetime.strptime(info, '%b %d, %Y')
+            return d.date()
+    return None
+
+
 def main():
-    json_data = get_text_from_json_files("~01a3f9faf308d8847a.json")
+    json_data = get_text_from_json_files("~01a4f37fc37d69619f.json")
+    tmp = get_signup_date(json_data)
+    print(tmp)
 
 
 if __name__ == "__main__":

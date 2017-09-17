@@ -157,7 +157,7 @@ def parser_runner(direction):
 
 
 def main():
-    direction = "Python Machine Learning"
+    direction = "Angular JS"
     parser_runner(direction)
 
 

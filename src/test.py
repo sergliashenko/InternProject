@@ -1,6 +1,7 @@
 import json
 import numpy as np
 from src import features
+from datetime import datetime
 
 
 def read_json_file(path):
@@ -130,7 +131,8 @@ def test_get_job_details_positive():
     json_data = read_json_file("resources/test_vacancy.json")
     # call function
     actual_details = features.get_job_details(json_data)
-    expected_details = "Looking for a programmer who has experience in algorithmic trading. " \
+    expected_details = "Needs to hire 8 Freelancers " \
+                       "Looking for a programmer who has experience in algorithmic trading. " \
                        "With specific knowledge about cryptocurrency. " \
                        "You should have knowledge of the Bittrex APIs and/or other Cryptocurrency exchanges."
     assert actual_details == expected_details
@@ -147,10 +149,10 @@ def test_get_additional_details_positive():
     assert actual_additional_details == expected_additional_details
 
 
-def test_get_job_skills_positive():
+def test_get_field_other_skills_positive():
     json_data = read_json_file("resources/test_vacancy.json")
     # call function
-    actual_skills = features.get_job_skills(json_data)
+    actual_skills = features.get_field_other_skills(json_data)
     expected_skills = ["Algorithm Development", "Python"]
     assert actual_skills == expected_skills
 
@@ -200,18 +202,18 @@ def test_get_avg_hourly_rate_positive():
     assert actual_avg_hourly_rate == expected_avg_hourly_rate
 
 
-def test_get_job_type_positive():
+def test_get_fixed_or_hourly_positive():
     json_data = read_json_file("resources/test_vacancy.json")
     # call function
-    actual_job_type = features.get_job_type(json_data)
+    actual_job_type = features.get_fixed_or_hourly(json_data)
     expected_job_type = "Hourly"
     assert actual_job_type == expected_job_type
 
 
-def test_get_client_history_positive():
+def test_get_hired_by_the_client_positive():
     json_data = read_json_file("resources/test_vacancy.json")
     # call function
-    actual_client_history = features.get_client_history(json_data)
+    actual_client_history = features.get_hired_by_the_client(json_data)
     expected_client_history = 194
     assert actual_client_history == expected_client_history
 
@@ -230,3 +232,28 @@ def test_get_project_length_positive():
     actual_project_length = features.get_project_length(json_data)
     expected_project_length = "More than 6 months"
     assert actual_project_length == expected_project_length
+
+
+def test_get_n_of_freelancers_positive():
+    json_data = read_json_file("resources/test_vacancy.json")
+    # call function
+    actual_count = features.get_n_of_freelancers(json_data)
+    expected_count = 8
+    assert actual_count == expected_count
+
+
+def test_get_country_positive():
+    json_data = read_json_file("resources/test_vacancy.json")
+    # call function
+    actual_country = features.get_country(json_data)
+    expected_country = "United States New York"
+    assert actual_country == expected_country
+
+
+def test_get_signup_date():
+    json_data = read_json_file("resources/test_vacancy.json")
+    # call function
+    actual_signup_date = features.get_signup_date(json_data)
+    expected_signup_date = datetime.strptime("2012-02-19", '%Y-%m-%d').date()
+    assert actual_signup_date == expected_signup_date
+
