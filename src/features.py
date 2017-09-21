@@ -3,11 +3,11 @@ import json
 import typing
 
 # dir with .json files
-DIR_PATH = ".\JSON_data/"
+DIR_PATH = "JSON_data"
 
-with open("resources\skills.json") as f:
+with open(os.path.join("resources", "skills.json")) as f:
     SKILLS = json.load(f)
-with open("resources\key_words.json") as f:
+with open(os.path.join("resources", "key_words.json")) as f:
     key_words = json.load(f)
 
 
@@ -196,7 +196,7 @@ def get_text_from_json_files(json_file_name):
     :param json_file_name: str
     :return: dict
     """
-    with open(DIR_PATH + json_file_name, "r", encoding='utf-8') as file:
+    with open(os.path.join(DIR_PATH, json_file_name), "r", encoding='utf-8') as file:
         return json.load(file)
 
 
