@@ -446,6 +446,7 @@ def get_project_status(json_data: dict) -> typing.Optional[typing.List[str]]:
     for word in job_details_list:
         for key_word in KEY_WORDS:
             ratio_value = fuzz.ratio(word.lower(), key_word)
+            #exept "design" because design == redesign as 86%
             if ratio_value > 83 and word.lower() != "design":
                 output_list.append("In Job details: " + word + " In Keywords: " + key_word + " %" + str(ratio_value))
     return output_list
