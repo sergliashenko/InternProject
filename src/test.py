@@ -250,10 +250,17 @@ def test_get_country_positive():
     assert actual_country == expected_country
 
 
-def test_get_signup_date():
+def test_get_signup_date_positive():
     json_data = read_json_file("resources/test_vacancy.json")
     # call function
     actual_signup_date = features.get_signup_date(json_data)
     expected_signup_date = datetime.strptime("2012-02-19", '%Y-%m-%d').date()
     assert actual_signup_date == expected_signup_date
 
+
+def test_get_client_jobs_posted_positive():
+    json_data = read_json_file("resources/test_vacancy.json")
+    # call function
+    actual_job_posted = features.get_client_jobs_posted(json_data)
+    expected_job_posted = 158
+    assert actual_job_posted == expected_job_posted
