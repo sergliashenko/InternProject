@@ -326,7 +326,8 @@ def get_value_of_hours_per_week(json_data: dict) -> typing.Union[str, None]:
     additional_info = get_job_additional_info(json_data)
     if additional_info is None:
         return None
-    hours_per_week_constant = ["Less than 30 hrs/week", "More than 30 hrs/week"]
+    hours_per_week_constant = ["Hourly Less than 30 hrs/week", "Hourly More than 30 hrs/week",
+                               "Hourly Hours to be determined"]
     for value in hours_per_week_constant:
         if value in additional_info:
             return value
@@ -350,15 +351,45 @@ def get_project_length(json_data: dict) -> typing.Union[str, None]:
     return None
 
 
+def get_fixed_price(json_data: dict) -> typing.Union[int, None]:
+    """
+    Getting value of Fixed Price from vacancy
+    :param json_data:dict
+    :return:int
+    """
+    if not "Additional information" in json_data:
+        return None
+    fixed_price_string = json_data["Additional information"]
+
+    fixed_price = None
+    if "Fixed Price" in fixed_price_string:
+        fixed_price = fixed_price_string
+
+    value_fixed_price = fixed_price.split()[2]
+    parsing_value_fixed_price = value_fixed_price.replace('$', '')
+    parsing_value_fixed_price = parsing_value_fixed_price.replace(',', '')
+
+    if parsing_value_fixed_price.isdigit():
+        return int(parsing_value_fixed_price)
+    else:
+        return None
 
 
-
-
-
-
-
-
-
+def get_filter_of_fixed_or_hourly(json_data: dict) -> typing.Union[str, None]:
+    """
+    Getting information about availability of key words "fixed price" and "hourly""
+    :param json_data: dict
+    :return: string
+    """
+    if not "Additional information" in json_data:
+        return None
+    fixed_and_hourly = json_data["Additional information"]
+    if "Fixed Price" in fixed_and_hourly:
+        return "fixed price"
+    elif "Hourly" in fixed_and_hourly:
+        return "hourly"
+    else:
+        return None
 
 
 def main():

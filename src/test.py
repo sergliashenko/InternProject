@@ -222,7 +222,7 @@ def test_get_value_of_hours_per_week_positive():
     json_data = read_json_file("resources/test_vacancy.json")
     # call function
     actual_value_of_hours_per_week = features.get_value_of_hours_per_week(json_data)
-    expected_value_of_hours_per_week = "More than 30 hrs/week"
+    expected_value_of_hours_per_week = "Hourly More than 30 hrs/week"
     assert actual_value_of_hours_per_week == expected_value_of_hours_per_week
 
 
@@ -232,3 +232,27 @@ def test_get_project_length_positive():
     actual_project_length = features.get_project_length(json_data)
     expected_project_length = "More than 6 months"
     assert actual_project_length == expected_project_length
+
+
+def test_get_fixed_price():
+    json_data = read_json_file("resources/test_data2.json")
+
+    fixed_price = features.get_fixed_price(json_data)
+
+    assert fixed_price == 4000
+
+
+def test_get_filter_of_fixed_or_hourly():
+    json_data_fix = read_json_file("resources/test_data2.json")
+    json_data_hourly = read_json_file("resources/test_vacancy.json")
+    json_data_empty = read_json_file("resources/bad_vacancy.json")
+
+    filter_fix = features.get_filter_of_fixed_or_hourly(json_data_fix)
+    filter_hourly = features.get_filter_of_fixed_or_hourly(json_data_hourly)
+    filter_empty = features.get_filter_of_fixed_or_hourly(json_data_empty)
+
+    assert filter_fix == 'fixed price'
+    assert filter_hourly == 'hourly'
+    assert filter_empty is None
+
+
