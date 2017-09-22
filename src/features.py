@@ -140,11 +140,11 @@ def get_skills_from_string(string: str) -> list:
 
 def normalise_string(string: str) -> str:
     """
-    Set string to lower case
+    Set string to lower case and del spaces
     :param string: str
     :return: string
     """
-    return string.lower()
+    return string.lower().strip()
 
 
 def get_find_key_words(json_data: dict) -> list:
