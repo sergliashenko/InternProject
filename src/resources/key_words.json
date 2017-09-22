@@ -1,3 +1,13 @@
 {
-  "bug" : ["bug"]
+  "bug" : ["bug"],
+  "urgent": ["urgent"],
+  "quick": ["quick"],
+  "asap": ["asap"],
+  "collaborate":["collaborate"],
+  "join team": ["join team"],
+  "remote": ["remote"],
+  "full/part-time":["cutting edge"],
+  "cutting edge": ["cutting edge"],
+  "funding":["funding"],
+  "client" : ["client"]
 }

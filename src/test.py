@@ -57,7 +57,7 @@ def test_normalise_string():
 
 def test_skills_from_string():
     input_value = "C++ and ruby is testing data for tests, another value is c plus plus and ruby in rails"
-    output_value = ['c++', 'ruby']
+    output_value = ['c++', 'ruby', 'typescript']
 
     assert set(features.get_skills_from_string(input_value)) == set(output_value)
 
@@ -66,14 +66,16 @@ def test_skills():
     json_data = read_json_file("resources/test_data.json")
     skills = features.get_skills(json_data)
 
-    assert set(skills) == {'html', 'full stack'}
+    assert set(skills) == {'html', 'full stack', 'angular js', 'javascript',
+                           'nginx', 'jquery', 'front end', 'mysql', 'aws',
+                           'django', 'react js', 'java', 'redis', 'memcached', 'typescript'}
 
 
 def test_find_key_words():
     json_data = read_json_file("resources/test_data.json")
     find_key = features.get_find_key_words(json_data)
 
-    assert find_key == ["bug"]
+    assert set(find_key) == {'bug', 'client'}
 
 
 def test_get_job_id_positive():

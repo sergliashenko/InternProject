@@ -350,6 +350,17 @@ def get_project_length(json_data: dict) -> typing.Union[str, None]:
     return None
 
 
+
+
+
+
+
+
+
+
+
+
+
 def main():
     json_data = get_text_from_json_files("~01a3f9faf308d8847a.json")
 
