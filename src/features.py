@@ -1,6 +1,7 @@
 import os
 import json
 import typing
+import re
 
 # dir with .json files
 DIR_PATH = "JSON_data"
@@ -390,6 +391,21 @@ def get_filter_of_fixed_or_hourly(json_data: dict) -> typing.Union[str, None]:
         return "hourly"
     else:
         return None
+
+
+def get_additional_info(json_data: dict) -> typing.Union[list, None]:
+    """
+    Returns a list of links.
+    """
+    if "Job details" not in json_data:
+        return None
+
+    our_string = json_data["Job details"]
+
+    list_with_info = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+                                our_string)
+
+    return list_with_info
 
 
 def main():

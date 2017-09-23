@@ -14,7 +14,7 @@ def test_get_len_job_detail():
     # call function
     len_job_detail = features.get_len_job_detail(json_data)
     # assert
-    assert len_job_detail == 1153
+    assert len_job_detail == 1232
 
 
 def test_get_proposals():
@@ -256,3 +256,9 @@ def test_get_filter_of_fixed_or_hourly():
     #assert filter_empty is None
 
 
+def test_get_additional_info():
+    json_data = read_json_file("resources/test_data.json")
+
+    additional_info = features.get_additional_info(json_data)
+
+    assert additional_info == ['https://www.youtube.com', 'https://go.twitch.tv/csruhub']
