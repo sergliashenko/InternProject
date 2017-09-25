@@ -264,3 +264,11 @@ def test_get_client_jobs_posted_positive():
     actual_job_posted = features.get_client_jobs_posted(json_data)
     expected_job_posted = 158
     assert actual_job_posted == expected_job_posted
+
+
+def test_get_client_rating_positive():
+    json_data = read_json_file("resources/test_vacancy.json")
+    # call function
+    actual_rating = features.get_client_rating(json_data)
+    expected_rating = ('4.91', '130')
+    assert actual_rating == expected_rating

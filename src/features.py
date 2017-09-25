@@ -7,9 +7,9 @@ from fuzzywuzzy import fuzz
 # dir with .json files
 DIR_PATH = ".\JSON_data/"
 
-with open("resources\skills.json") as f:
+with open(r"D:\ParserUpWork\src\resources\skills.json") as f:
     SKILLS = json.load(f)
-with open("resources\key_words.json") as f:
+with open(r"D:\ParserUpWork\src\resources\key_words.json") as f:
     key_words = json.load(f)
 
 
@@ -452,8 +452,27 @@ def get_project_status(json_data: dict) -> typing.Optional[typing.List[str]]:
     return output_list
 
 
+def get_client_rating(json_data: dict) -> typing.Optional[typing.Tuple[float, int]]:
+    """
+    Get client's rating and number of reviews. For example (4.95) 9 reviews
+    :param json_data: dict
+    :return: str or NoneType
+    """
+    client_info = get_client_info(json_data)
+    if client_info is None:
+        return None
+    for info in client_info:
+        if "reviews" in info:
+            idx_rating = info.find(")")
+            rating = info[:idx_rating].replace("(", "")
+            idx_review = info.find("reviews")
+            review = info[idx_rating + 1:idx_review].strip()
+            return rating, review
+    return None
+
+
 def main():
-    json_data = get_text_from_json_files("~01a8f1fb6888561cd5.json")
+    json_data = get_text_from_json_files("~01be1c25fa2d2d5da1.json")
 
 
 if __name__ == "__main__":
