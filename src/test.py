@@ -1,6 +1,7 @@
 import json
 import numpy as np
 from src import features
+from src import utils
 
 
 def read_json_file(path):
@@ -52,7 +53,7 @@ def test_normalise_string():
     input_value = "THIS IS TEST FOR TESTS"
     output_value = "this is test for tests"
 
-    assert features.normalise_string(input_value) == output_value
+    assert utils.normalise_string(input_value) == output_value
 
 
 def test_skills_from_string():
@@ -73,7 +74,7 @@ def test_skills():
 
 def test_find_key_words():
     json_data = read_json_file("resources/test_data.json")
-    find_key = features.get_find_key_words(json_data)
+    find_key = features.get_key_words(json_data)
 
     assert set(find_key) == {'client'}
 
@@ -147,14 +148,6 @@ def test_get_additional_details_positive():
         "Other Skills:\"Algorithm Development\",\"Python\","
     ]
     assert actual_additional_details == expected_additional_details
-
-
-def test_get_job_skills_positive():
-    json_data = read_json_file("resources/test_vacancy.json")
-    # call function
-    actual_skills = features.get_job_skills(json_data)
-    expected_skills = ["Algorithm Development", "Python"]
-    assert actual_skills == expected_skills
 
 
 def test_get_project_type_positive():

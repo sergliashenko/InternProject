@@ -1,10 +1,10 @@
+from src import utils
+
 import os
 import json
 import typing
 import re
 
-# dir with .json files
-DIR_PATH = "JSON_data"
 
 with open(os.path.join("resources", "skills.json")) as f:
     SKILLS = json.load(f)
@@ -100,11 +100,12 @@ def get_proposals(json_data: dict) -> typing.Union[list, None]:
     parsing_proposals = proposals.replace("Proposals: ", "")
     if "to" in parsing_proposals:
         result = parsing_proposals.split("to")
-        return list(map(int, result))
     elif "+" in parsing_proposals:
         result = parsing_proposals.replace("+")
         result = [result, 9999]
-        return list(map(int, result))
+    else:
+        return None
+    return list(map(int, result))
 
 
 def get_skills(json_data: dict) -> list:
@@ -129,7 +130,7 @@ def get_skills_from_string(string: str) -> list:
     :param string: str
     :return:list
     """
-    string = normalise_string(string)
+    string = utils.normalise_string(string)
     result = []
     for key in SKILLS:
         values = SKILLS[key]
@@ -139,16 +140,7 @@ def get_skills_from_string(string: str) -> list:
     return result
 
 
-def normalise_string(string: str) -> str:
-    """
-    Set string to lower case and del spaces
-    :param string: str
-    :return: string
-    """
-    return string.lower().strip()
-
-
-def get_find_key_words(json_data: dict) -> list:
+def get_key_words(json_data: dict) -> list:
     """
     Finding key words in key_words.json and load it to list
     :param json_data: dict
@@ -169,7 +161,7 @@ def get_key_words_from_string(string: str) -> list:
     Parsing string and load it to list
     :return: list
     """
-    string = normalise_string(string)
+    string = utils.normalise_string(string)
     result = []
     for key in key_words:
         values = key_words[key]
@@ -189,16 +181,6 @@ def find_json_file_in_dir(path):
     # filter only .json type
     jsons = filter(lambda x: x.endswith('.json'), files)
     return jsons
-
-
-def get_text_from_json_files(json_file_name):
-    """
-    Write all content from .json file to dict
-    :param json_file_name: str
-    :return: dict
-    """
-    with open(os.path.join(DIR_PATH, json_file_name), "r", encoding='utf-8') as file:
-        return json.load(file)
 
 
 def get_job_id(json_data: dict) -> str:
@@ -235,21 +217,6 @@ def get_activity_on_job(json_data: dict) -> typing.Union[list, None]:
 
 def get_client_info(json_data: dict) -> typing.Union[list, None]:
     return json_data.get("About the client", None)
-
-
-def get_job_skills(json_data: dict) -> typing.Union[list, None]:
-    """
-    Getting value of field "Other Skills", if this field not exist return None
-    :param json_data: dict
-    :return: list or NoneType
-    """
-    additional_details = get_job_additional_details(json_data)
-    if additional_details is None:
-        return None
-    for data in additional_details:
-        if "Other Skills" in data:
-            idx = data.find(":") + 1
-            return data[idx:len(data) - 1].replace('"', "").split(",")
 
 
 def get_project_type(json_data: dict) -> typing.Union[str, None]:
@@ -327,7 +294,8 @@ def get_value_of_hours_per_week(json_data: dict) -> typing.Union[str, None]:
     additional_info = get_job_additional_info(json_data)
     if additional_info is None:
         return None
-    hours_per_week_constant = ["Hourly Less than 30 hrs/week", "Hourly More than 30 hrs/week",
+    hours_per_week_constant = ["Hourly Less than 30 hrs/week",
+                               "Hourly More than 30 hrs/week",
                                "Hourly Hours to be determined"]
     for value in hours_per_week_constant:
         if value in additional_info:
@@ -362,9 +330,10 @@ def get_fixed_price(json_data: dict) -> typing.Union[int, None]:
         return None
     fixed_price_string = json_data["Additional information"]
 
-    fixed_price = None
     if "Fixed Price" in fixed_price_string:
         fixed_price = fixed_price_string
+    else:
+        return None
 
     value_fixed_price = fixed_price.split()[2]
     parsing_value_fixed_price = value_fixed_price.replace('$', '')
@@ -402,15 +371,7 @@ def get_additional_info(json_data: dict) -> typing.Union[list, None]:
 
     our_string = json_data["Job details"]
 
-    list_with_info = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+    list_with_links = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
                                 our_string)
 
-    return list_with_info
-
-
-def main():
-    json_data = get_text_from_json_files("~01a3f9faf308d8847a.json")
-
-
-if __name__ == "__main__":
-    main()
+    return list_with_links
