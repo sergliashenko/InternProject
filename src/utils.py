@@ -1,4 +1,5 @@
 import os
+import json
 
 
 def get_files_with_ext(path, ext):
@@ -31,3 +32,33 @@ def normalise_string(string: str) -> str:
     :return: string
     """
     return string.lower().strip()
+
+
+def fix_json(path):
+    for root, dirs, files in os.walk(path):
+        for f in files:
+            if not f.endswith(".json"):
+                os.remove(os.path.join(root, f))
+                continue
+
+            with open(os.path.join(root, f)) as ff:
+                data = json.load(ff)
+                if len(data) == 2:
+                    data = data[1]
+                else:
+                    print("Wrong length: %s" % str(data))
+                    continue
+
+            if "good" in data:
+                if "good" in root:
+                    data["good"] = "+"
+                elif "bad" in root:
+                    data["good"] = "-"
+                else:
+                    raise ValueError("Wrong path: %s" % root)
+
+                with open(os.path.join(root, f), "w") as ff:
+                    json.dump(data, ff)
+            else:
+                print("No good in: %s" % os.path.join(root, f))
+                os.remove(os.path.join(root, f))

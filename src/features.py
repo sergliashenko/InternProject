@@ -330,9 +330,10 @@ def get_fixed_price(json_data: dict) -> typing.Union[int, None]:
         return None
     fixed_price_string = json_data["Additional information"]
 
-    fixed_price = None
     if "Fixed Price" in fixed_price_string:
         fixed_price = fixed_price_string
+    else:
+        return None
 
     value_fixed_price = fixed_price.split()[2]
     parsing_value_fixed_price = value_fixed_price.replace('$', '')
