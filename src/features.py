@@ -4,6 +4,8 @@ import os
 import json
 import typing
 import re
+from datetime import datetime, date
+from fuzzywuzzy import fuzz
 
 
 with open(os.path.join("resources", "skills.json")) as f:
@@ -360,6 +362,106 @@ def get_filter_of_fixed_or_hourly(json_data: dict) -> typing.Union[str, None]:
         return "hourly"
     else:
         return None
+
+
+def get_project_status(json_data: dict) -> typing.Optional[typing.List[str]]:
+    """
+    Getting project status.
+    !!At now this function return word from KEY_WORDS which was found in vacancies
+    :param json_data: dict
+    :return: list[str] or NoneType
+    """
+    KEY_WORDS = ["bug", "fixing", "trouble", "shoot", "existing", "redesign", "refactoring", "ongoing", "long term",
+                 "long time", "review (the) code", "maintain", "growing (team)"]
+    job_details = get_job_details(json_data)
+    if job_details is None:
+        return None
+    output_list = []
+    job_details_list = job_details.split()
+    for word in job_details_list:
+        for key_word in KEY_WORDS:
+            ratio_value = fuzz.ratio(word.lower(), key_word)
+            #exept "design" because design == redesign as 86%
+            if ratio_value > 83 and word.lower() != "design":
+                output_list.append("In Job details: " + word + " In Keywords: " + key_word + " %" + str(ratio_value))
+    return output_list
+
+
+def get_client_jobs_posted(json_data: dict) -> typing.Optional[int]:
+    """
+    Getting number of Jobs Posted by the client
+    :param json_data: dict
+    :return: int or NoneType
+    """
+    client_info = get_client_info(json_data)
+    if client_info is None:
+        return None
+    find_str_const_first = "Job Posted"
+    find_str_const_second = "Jobs Posted"
+    for info in client_info:
+        tmp = info.find(find_str_const_first)
+        if tmp == -1:
+            idx = info.find(find_str_const_second)
+        else:
+            idx = tmp
+        if idx != -1:
+            jobs_posted = info[:idx].strip()
+            return int(jobs_posted)
+    return None
+
+
+def get_n_of_freelancers(json_data: dict) -> typing.Optional[int]:
+    """
+    Getting value from field for example "Needs to hire 2 Freelancers" from Job details
+    This field not always specified in this case return 1
+    :param json_data: dict
+    :return: int or NoneType
+    """
+    job_details = get_job_details(json_data)
+    if job_details is None:
+        return None
+    find_str_const = "Needs to hire"
+    start_pos = job_details.find(find_str_const)
+    if start_pos != -1:
+        end_pos = job_details.find("Freelancers")
+        str_value = job_details[len(find_str_const): end_pos]
+        return int(str_value)
+    return 1
+
+
+def get_country(json_data: dict) -> typing.Optional[str]:
+    """
+    Getting customer's country. If this info not identified - return None
+    :param json_data: dict
+    :return: str or NoneType
+    """
+    client_info = get_client_info(json_data)
+    if client_info is None:
+        return None
+    for info in client_info:
+        if "AM" in info or "PM" in info:
+            # For example " 00:00 AM" size of this string is 9. We cut this from info
+            country = info[:-9]
+            return "".join(country).split()[0]
+    return None
+
+
+def get_signup_date(json_data: dict) -> typing.Optional[date]:
+    """
+    Getting client's registered date in format "year-month-day"
+    :param json_data: dict
+    :return: date or NoneType
+    """
+    client_info = get_client_info(json_data)
+    if client_info is None:
+        return None
+    find_const = "Member Since"
+    for info in client_info:
+        if find_const in info:
+            info = info.replace(find_const, "").strip()
+            d = datetime.strptime(info, '%b %d, %Y')
+            return d.date()
+    return None
 
 
 def get_additional_info(json_data: dict) -> typing.Union[list, None]:
