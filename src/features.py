@@ -7,7 +7,6 @@ import re
 from datetime import datetime, date
 from fuzzywuzzy import fuzz
 
-
 with open(os.path.join("resources", "skills.json")) as f:
     SKILLS = json.load(f)
 with open(os.path.join("resources", "key_words.json")) as f:
@@ -381,9 +380,11 @@ def get_project_status(json_data: dict) -> typing.Optional[typing.List[str]]:
     for word in job_details_list:
         for key_word in KEY_WORDS:
             ratio_value = fuzz.ratio(word.lower(), key_word)
-            #exept "design" because design == redesign as 86%
+            # except "design" because design == redesign as 86%
             if ratio_value > 83 and word.lower() != "design":
-                output_list.append("In Job details: " + word + " In Keywords: " + key_word + " %" + str(ratio_value))
+                output_list.append(key_word)
+                #output_list.append("In Job details: " + word + " In Keywords: " + key_word + " %" + str(ratio_value))
+
     return output_list
 
 
@@ -474,6 +475,5 @@ def get_additional_info(json_data: dict) -> typing.Union[list, None]:
     our_string = json_data["Job details"]
 
     list_with_links = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
-                                our_string)
-
+                                 our_string)
     return list_with_links
