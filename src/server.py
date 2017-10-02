@@ -11,4 +11,4 @@ def our_predict(value):
 def predict(link):
     return our_predict(link)
 
-app.run(debug=True, port=5000)cd 
+app.run(debug=True, port=5000)
