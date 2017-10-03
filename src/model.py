@@ -3,9 +3,11 @@ from src import encoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.externals import joblib
-
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+from sklearn.preprocessing import binarize
 import numpy as np
-
+from sklearn.metrics import confusion_matrix
 import os
 import json
 
@@ -19,6 +21,7 @@ def prepare_data(path: str) -> Tuple[np.ndarray, np.ndarray]:
     for root, dirs, files in os.walk(path):
         for f in files:
             if f.endswith(".json"):
+                print(f)
                 with open(os.path.join(root, f)) as ff:
                     job_desc = json.load(ff)
 
@@ -31,15 +34,39 @@ def prepare_data(path: str) -> Tuple[np.ndarray, np.ndarray]:
 
 
 def cross_validate(features: np.ndarray, labels: np.ndarray, n_folds: int=10):
+    X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.33)
     rf = RandomForestClassifier(n_jobs=-1, class_weight="balanced")
     parameters_grid = {"n_estimators": [100, 300, 500, 700],
                        "max_features": ['sqrt', 'log2']}
 
-    cv_rf = GridSearchCV(estimator=rf, param_grid=parameters_grid, scoring="f1", cv=n_folds, verbose=2, n_jobs=-1)
-    cv_rf.fit(features, labels)
+    cv_rf = GridSearchCV(estimator=rf, param_grid=parameters_grid, scoring="f1", cv=n_folds, verbose=1, n_jobs=-1)
+    cv_rf.fit(X_train, y_train)
+
+    y_pred = cv_rf.predict_proba(X_test)
+    y_pred = y_pred[:,0]
+    for i in range(30, 90, 5):
+        print(i)
+        y_temp_pred = np.where(y_pred>(float(i)/100), 0.0, 1.0)
+        print(confusion_matrix(y_test, y_temp_pred))
+
     print(cv_rf.cv_results_)
 
     return cv_rf.best_estimator_
+
+
+def test(features: np.ndarray, labels: np.ndarray) -> None:
+    rf = RandomForestClassifier(200)
+
+    X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.33)
+    rf.fit(X_train, y_train)
+    y_pred = rf.predict_proba(X_test)
+    y_pred = y_pred[:,0]
+    for i in range(50, 90, 5):
+        print(i)
+        y_temp_pred = np.where(y_pred>(float(i)/100), 1.0, 0.0)
+        print(confusion_matrix(y_test, y_temp_pred))
+    print("y_test: %i\ty_pred: %i" % (sum(y_test), sum(y_pred)))
+    print(classification_report(y_test, y_pred))
 
 
 def train(features: np.ndarray, labels: np.ndarray, model_params):
@@ -58,5 +85,7 @@ def load_model(path):
 
 if __name__ == '__main__':
     features, labels = prepare_data(os.path.join("resources", "data"))
+    # test(features, labels)
     model = cross_validate(features=features, labels=labels)
-    save_model(model, os.path.join("resources", "data", "model.pkl"))
+    # save_model(model, os.path.join("resources", "data", "model.pkl"))
+

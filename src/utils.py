@@ -1,8 +1,9 @@
 import os
 import json
+import matplotlib.pyplot as plt
+import numpy as np
 
-
-def get_files_with_ext(path, ext):
+def get_files_with_ext(path, ext="json"):
     ext = ext.replace(".", "")
     files = [os.path.join(root, name)
                  for root, dirs, files in os.walk(path)
@@ -62,3 +63,42 @@ def fix_json(path):
             else:
                 print("No good in: %s" % os.path.join(root, f))
                 os.remove(os.path.join(root, f))
+
+
+def get_countries(path):
+    from src.features import get_country
+    json_files = get_files_with_ext(path)
+    countries = []
+    for f in json_files:
+        with open(f, "r") as fp:
+            data = json.load(fp)
+            c = get_country(data)
+            if c is None:
+                c = "None"
+            if c == "United":
+                continue
+            countries.append(c)
+    # print(countries)
+    occurences = [(x, countries.count(x)) for x in set(countries) if countries.count(x) > 10]
+
+    print (len(occurences))
+    print(occurences)
+    return occurences
+
+if __name__ == '__main__':
+    countries_by_occur = get_countries("/Users/skondrat/repo/ParserUpWork/src/resources/data")
+    plt.rcdefaults()
+    fig, ax = plt.subplots()
+    countries = [x[0] for x in countries_by_occur]
+    occurs_num = [x[1] for x in countries_by_occur]
+    y_pos = np.arange(len(countries))
+
+    ax.barh(y_pos, occurs_num, align='center',
+            color='green')
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(countries)
+    ax.invert_yaxis()  # labels read top-to-bottom
+    ax.set_xlabel('number of vacancies')
+    ax.set_title('countries by occurance')
+
+    plt.show()
