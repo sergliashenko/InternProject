@@ -35,16 +35,15 @@ def encode_job(job_desc: dict, is_labeled: bool=True) -> Tuple[np.ndarray, np.nd
     signup_date = features.get_signup_date(job_desc)
     signup_date = np.array([[signup_date.year]] if signup_date is not None else np.array([[0.0]]))
 
-    # project_status = features.get_project_status(job_desc)
+    project_status = features.get_project_status(job_desc)
     # Hardcode in "else" condition
-    # project_status = project_status_encoder.transform([project_status]) if project_status is not None \
-    #     else np.zeros([1, 13])
+    project_status = project_status_encoder.transform([project_status]) if project_status is not None else np.zeros([1, 13])
 
-    # job_posted = features.get_client_jobs_posted(job_desc)
-    # job_posted = np.array([[job_posted]]) if job_posted is not None else np.array([[0.0]])
+    job_posted = features.get_client_jobs_posted(job_desc)
+    job_posted = np.array([[job_posted]]) if job_posted is not None else np.array([[0.0]])
 
-    # number_of_freelancers = features.get_n_of_freelancers(job_desc)
-    # number_of_freelancers = np.array([[number_of_freelancers]]) if number_of_freelancers is not None else np.array([[0.0]])
+    number_of_freelancers = features.get_n_of_freelancers(job_desc)
+    number_of_freelancers = np.array([[number_of_freelancers]]) if number_of_freelancers is not None else np.array([[0.0]])
 
     price = features.get_fixed_price(job_desc)
     price = np.array([[price]]) if price is not None else np.array([[0.0]])
@@ -62,6 +61,5 @@ def encode_job(job_desc: dict, is_labeled: bool=True) -> Tuple[np.ndarray, np.nd
         label = 1.0 if job_desc["good"] == "+" else 0.0
     else:
         label = 0.0
-    # return np.concatenate([skills, key_words, country, signup_date, project_status, job_posted, number_of_freelancers,
-    return np.concatenate([skills, key_words, country, signup_date,
-                           fixed_or_hourly], axis=1), np.array([label])
+    return np.concatenate([skills, key_words, country, signup_date, project_status, job_posted, number_of_freelancers,
+                           price, fixed_or_hourly], axis=1), np.array([label])

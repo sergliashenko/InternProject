@@ -87,5 +87,5 @@ if __name__ == '__main__':
     features, labels = prepare_data(os.path.join("resources", "data"))
     # test(features, labels)
     model = cross_validate(features=features, labels=labels)
-    # save_model(model, os.path.join("resources", "data", "model.pkl"))
+    save_model(model, os.path.join("resources", "model.pkl"))
 
