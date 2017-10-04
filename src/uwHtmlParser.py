@@ -5,12 +5,13 @@ import json
 import urllib.request
 from bs4 import BeautifulSoup, NavigableString
 
-MASK_URL = "https://www.upwork.com/o/jobs/browse/?page="
+MASK_URL = "https://www.upwork.com/o/jobs/browse/"
 JSON_PATH = "./JSON_data/"
 
 
 def get_html(url):
-    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'}, unverifiable=True)
+    user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46"
+    req = urllib.request.Request(url, headers={'User-Agent': user_agent}, unverifiable=True)
     page = urllib.request.urlopen(req)
     return page.read()
 
@@ -147,7 +148,7 @@ def parser_runner(direction):
         os.mkdir(JSON_PATH)
     # direction = "Python Machine Learning"
     number_of_page = 1
-    mask_str = "&q=" + direction.replace(" ", "%20")
+    mask_str = "?q=" + direction.replace(" ", "%20")
     path = MASK_URL + str(number_of_page) + mask_str
     pages = get_jobs_count(get_html(path))
     print("Jobs found for direction: " + '"' + direction + '"' + ": " + str(pages))
@@ -168,8 +169,8 @@ def parser_runner(direction):
 
 def parser_for_direction(direction: str, max_number_of_jobs: int=10):
     number_of_page = 1
-    mask_str = "&q=" + direction.replace(" ", "%20")
-    path = MASK_URL + str(number_of_page) + mask_str
+    mask_str = "?q=" + direction.replace(" ", "%20") + "&sort=renew_time_int%2Bdesc"
+    path = MASK_URL + mask_str
 
     jobs_count = get_jobs_count(get_html(path))
     if jobs_count > max_number_of_jobs:

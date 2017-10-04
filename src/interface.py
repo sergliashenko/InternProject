@@ -1,11 +1,8 @@
 import os
 
-from sklearn.ensemble import RandomForestClassifier
-
 import uwHtmlParser
 import encoder
 import model
-
 
 def predict_job_by_link(job_link:str)->bool:
     job = uwHtmlParser.parse_one_job(job_link)

@@ -2,7 +2,6 @@ from flask import Flask
 
 app = Flask(__name__)
 
-
 def our_predict(value):
     return value
 

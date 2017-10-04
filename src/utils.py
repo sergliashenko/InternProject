@@ -2,6 +2,7 @@ import os
 import json
 import matplotlib.pyplot as plt
 import numpy as np
+import re, string
 
 def get_files_with_ext(path, ext="json"):
     ext = ext.replace(".", "")
@@ -85,7 +86,33 @@ def get_countries(path):
     print(occurences)
     return occurences
 
+
+def normalize(job_desc):
+    job_desc = job_desc.lower().replace("-", " ").replace("_", " ")
+    job_desc = re.sub("[^\w\s]+", "", job_desc)
+    return job_desc
+
+
+def get_words_occurenrces(path):
+    from src.features import get_job_details
+    json_files = get_files_with_ext(path)
+    all_words = []
+    for f in json_files:
+        with open(f, "r") as fp:
+            desc = get_job_details(json.load(fp))
+        if desc is None:
+            continue
+        desc = normalize(desc)
+        all_words += desc.split()
+    occurences = [(x, all_words.count(x)) for x in set(all_words) if 5 < all_words.count(x)]
+    occurences = [x[0] for x in occurences]
+    with open("/Users/skondrat/words_more.json", "w") as fp:
+        json.dump(occurences, fp)
+
+
 if __name__ == '__main__':
+    get_words_occurenrces("/Users/skondrat/repo/ParserUpWork/src/resources/data")
+    exit()
     countries_by_occur = get_countries("/Users/skondrat/repo/ParserUpWork/src/resources/data")
     plt.rcdefaults()
     fig, ax = plt.subplots()

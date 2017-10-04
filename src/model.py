@@ -83,9 +83,25 @@ def load_model(path):
     return joblib.load(path)
 
 
+def evaluate_features(path):
+    model = load_model(path)
+    # print(np.sort(model.feature_importances_)[::-1])
+    # print(np.argsort(model.feature_importances_)[::-1])
+    hui = np.sort(model.feature_importances_)[::-1]
+    pizda = np.argsort(model.feature_importances_)[::-1]
+    with open("/Users/skondrat/features.txt", "r") as fp:
+        result = fp.readlines()
+        result = [r.strip() for r in result]
+    for index in range(100):
+        i = pizda[index]
+        print(result[i], hui[index]*100)
+
+np.set_printoptions(threshold=np.nan)
 if __name__ == '__main__':
+    evaluate_features(os.path.join("resources", "data", "model1.pkl"))
+    exit()
     features, labels = prepare_data(os.path.join("resources", "data"))
     # test(features, labels)
     model = cross_validate(features=features, labels=labels)
-    # save_model(model, os.path.join("resources", "data", "model.pkl"))
+    save_model(model, os.path.join("resources", "data", "model1.pkl"))
 

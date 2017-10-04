@@ -208,6 +208,19 @@ def get_job_details(json_data: dict) -> typing.Union[str, None]:
     return json_data.get("Job details", None)
 
 
+def get_job_details_and_name(json_data: dict) -> typing.Optional[str]:
+    """
+    Return concatenate job details and job name
+    :param json_data: dict
+    :return: str
+    """
+    details = get_job_details(json_data)
+    name = get_job_name(json_data)
+    if details is None or name is None:
+        return None
+    return name + "\n" + details
+
+
 def get_job_additional_details(json_data: dict) -> typing.Union[list, None]:
     return json_data.get("Additional_details", None)
 
