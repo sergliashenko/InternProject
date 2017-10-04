@@ -2,7 +2,8 @@ import math
 import os
 import json
 
-import urllib.request
+from urllib import request
+from urllib.parse import quote_plus
 from bs4 import BeautifulSoup, NavigableString
 
 MASK_URL = "https://www.upwork.com/o/jobs/browse/"
@@ -10,9 +11,8 @@ JSON_PATH = "./JSON_data/"
 
 
 def get_html(url):
-    user_agent = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46"
-    req = urllib.request.Request(url, headers={'User-Agent': user_agent}, unverifiable=True)
-    page = urllib.request.urlopen(req)
+    req = request.Request(url, headers={'User-Agent': 'Mozilla/5.0'}, unverifiable=True)
+    page = request.urlopen(req)
     return page.read()
 
 
@@ -169,14 +169,17 @@ def parser_runner(direction):
 
 def parser_for_direction(direction: str, max_number_of_jobs: int=10):
     number_of_page = 1
-    mask_str = "?q=" + direction.replace(" ", "%20") + "&sort=renew_time_int%2Bdesc"
-    path = MASK_URL + mask_str
+
+    quote_plus("%s?page=1&q=%s" % (MASK_URL, direction))
+
+    mask_str = "&q=" + direction.replace(" ", "%20")
+    path = MASK_URL + str(number_of_page) + mask_str
 
     jobs_count = get_jobs_count(get_html(path))
     if jobs_count > max_number_of_jobs:
         jobs_count = max_number_of_jobs
 
-    pages = math.ceil(jobs_count / 10)
+    pages = int(math.ceil(jobs_count / 10))
 
     print("All pages:" + str(pages))
 
@@ -192,7 +195,6 @@ def parser_for_direction(direction: str, max_number_of_jobs: int=10):
             job_link = "https://www.upwork.com/o/jobs/job/_" + job_id
             projects.append(parse_one_job(job_link, job_id))
     return projects
-
 
 
 def main():

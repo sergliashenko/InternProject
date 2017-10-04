@@ -1,0 +1,9 @@
+pytest
+numpy
+pandas
+scikit-learn
+matplotlib
+beautifulsoup4
+fuzzywuzzy[speedup]
+Flask
+sqlalchemy

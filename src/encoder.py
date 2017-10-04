@@ -46,8 +46,8 @@ def encode_job(job_desc: dict, is_labeled: bool=True) -> Tuple[np.ndarray, np.nd
 
     project_status = features.get_project_status(job_desc)
     # Hardcode in "else" condition
-    project_status = project_status_encoder.transform([project_status]) if project_status is not None \
-        else np.zeros([1, 13])
+
+    project_status = project_status_encoder.transform([project_status]) if project_status is not None else np.zeros([1, 13])
 
     job_posted = features.get_client_jobs_posted(job_desc)
     job_posted = np.array([[job_posted]]) if job_posted is not None else np.array([[0.0]])
