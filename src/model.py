@@ -21,7 +21,7 @@ def prepare_data(path: str) -> Tuple[np.ndarray, np.ndarray]:
     for root, dirs, files in os.walk(path):
         for f in files:
             if f.endswith(".json"):
-                print(f)
+                # print(f)
                 with open(os.path.join(root, f)) as ff:
                     job_desc = json.load(ff)
 
@@ -34,7 +34,8 @@ def prepare_data(path: str) -> Tuple[np.ndarray, np.ndarray]:
 
 
 def cross_validate(features: np.ndarray, labels: np.ndarray, n_folds: int=10):
-    X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.33)
+
+    X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2)
     rf = RandomForestClassifier(n_jobs=-1, class_weight="balanced")
     parameters_grid = {"n_estimators": [100, 300, 500, 700],
                        "max_features": ['sqrt', 'log2']}
@@ -42,7 +43,7 @@ def cross_validate(features: np.ndarray, labels: np.ndarray, n_folds: int=10):
     cv_rf = GridSearchCV(estimator=rf, param_grid=parameters_grid, scoring="f1", cv=n_folds, verbose=1, n_jobs=-1)
     cv_rf.fit(X_train, y_train)
 
-    y_pred = cv_rf.predict_proba(X_test)
+    y_pred = cv_rf.best_estimator_.predict_proba(X_test)
     y_pred = y_pred[:,0]
     for i in range(30, 90, 5):
         print(i)
@@ -83,6 +84,14 @@ def load_model(path):
     return joblib.load(path)
 
 
+def balance_dataset(features, labels):
+    pos_num = np.sum(labels)
+    neg_num = labels.shape[0] - pos_num
+    idxs = np.random.randint(neg_num, size=pos_num * 2)
+    features = np.concatenate([features[labels == 1.0], features[labels == 0.0][idxs]])
+    labels = np.concatenate([labels[labels == 1.0], labels[labels == 0.0][idxs]])
+    return features, labels
+
 def evaluate_features(path):
     model = load_model(path)
     # print(np.sort(model.feature_importances_)[::-1])
@@ -96,12 +105,17 @@ def evaluate_features(path):
         i = pizda[index]
         print(result[i], hui[index]*100)
 
+
 np.set_printoptions(threshold=np.nan)
 if __name__ == '__main__':
-    evaluate_features(os.path.join("resources", "data", "model1.pkl"))
-    exit()
+    # evaluate_features(os.path.join("resources", "data", "model1.pkl"))
+    # exit()
     features, labels = prepare_data(os.path.join("resources", "data"))
+    # print(labels.shape)
+    # exit()
+    features, labels = balance_dataset(features, labels)
     # test(features, labels)
+
     model = cross_validate(features=features, labels=labels)
     save_model(model, os.path.join("resources", "model.pkl"))
 

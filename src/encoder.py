@@ -58,7 +58,6 @@ def encode_job(job_desc: dict, is_labeled: bool=True) -> Tuple[np.ndarray, np.nd
     price = features.get_fixed_price(job_desc)
     price = np.array([[price]]) if price is not None else np.array([[0.0]])
 
-
     fixed_or_hourly = features.get_filter_of_fixed_or_hourly(job_desc)
     fixed_or_hourly = job_type_price_encoder.transform([[fixed_or_hourly]]) if fixed_or_hourly is not None \
         else np.array([[0.0, 0.0]])
@@ -77,6 +76,7 @@ def encode_job(job_desc: dict, is_labeled: bool=True) -> Tuple[np.ndarray, np.nd
         label = 0.0
     return np.concatenate([skills, key_words, country, signup_date, project_status, job_posted, number_of_freelancers,
                            price, fixed_or_hourly, words], axis=1), np.array([label])
+
 
 def print_features():
     feature_names = skills_encoder.classes_.tolist() + key_words_encoder.classes_.tolist() + \
