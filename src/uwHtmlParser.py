@@ -9,9 +9,13 @@ from bs4 import BeautifulSoup, NavigableString
 MASK_URL = "https://www.upwork.com/o/jobs/browse/"
 JSON_PATH = "./JSON_data/"
 
+# NOTE: replace this parameters with ones in your browser
+COOKIE = "session_id=a74eef23d94b4b5104f924938e578d7a; device_view=full; __cfduid=df9c47403359cc0a75f6f9a44e8a070361507736897; visitor_id=62.80.165.250.1507736891534564; qt_visitor_id=62.80.165.250.1507736891534564; XSRF-TOKEN=cdfcc862899c3b73931d268cb41573db"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36 OPR/48.0.2685.35"
+
 
 def get_html(url):
-    req = request.Request(url, headers={'User-Agent': 'Mozilla/5.0'}, unverifiable=True)
+    req = request.Request(url, headers={"cookie": COOKIE, "user-agent": USER_AGENT}, unverifiable=True)
     page = request.urlopen(req)
     return page.read()
 
@@ -168,32 +172,40 @@ def parser_runner(direction):
 
 
 def parser_for_direction(direction: str, max_number_of_jobs: int=10):
-    number_of_page = 1
+    direction = direction.replace(" ", "%20")
 
-    quote_plus("%s?page=1&q=%s" % (MASK_URL, direction))
+    # quote_plus("%s?page=1&q=%s" % (MASK_URL, direction))
+    #
+    # mask_str = "?page=%i&q=%s" + direction.replace(" ", "%20")
+    # path = MASK_URL + str(number_of_page) + mask_str
+    #
+    # jobs_count = get_jobs_count(get_html(path))
+    # if jobs_count > max_number_of_jobs:
+    #     jobs_count = max_number_of_jobs
+    #
+    # pages = int(math.ceil(jobs_count / 10))
+    #
+    # print("All pages:" + str(pages))
 
-    mask_str = "&q=" + direction.replace(" ", "%20")
-    path = MASK_URL + str(number_of_page) + mask_str
-
-    jobs_count = get_jobs_count(get_html(path))
-    if jobs_count > max_number_of_jobs:
-        jobs_count = max_number_of_jobs
-
-    pages = int(math.ceil(jobs_count / 10))
-
-    print("All pages:" + str(pages))
-
+    job_counter = 0
     projects = []
-    for number_of_page in range(1, pages + 1):
+    for number_of_page in range(1, 9999):
         print("At now parse pages: " + str(number_of_page))
-        html = get_html(MASK_URL + str(number_of_page) + mask_str)
+        page_url = "https://www.upwork.com/o/jobs/browse/?page=%i&q=%s" % (number_of_page, direction)
+        html = get_html(page_url)
         page_soup = BeautifulSoup(html, "html.parser")
         page_table = page_soup.find("div", class_="col-sm-12 jobs-list")
         jobs_list = page_table.find_all("section", class_="job-tile")
         for job in jobs_list:
+            print("parsing job #%i" % job_counter)
             job_id = job.get("data-key")
             job_link = "https://www.upwork.com/o/jobs/job/_" + job_id
-            projects.append(parse_one_job(job_link, job_id))
+            projects.append({"link": job_link, "job": parse_one_job(job_link, job_id)})
+
+            job_counter += 1
+
+            if job_counter >= max_number_of_jobs:
+                return projects
     return projects
 
 
