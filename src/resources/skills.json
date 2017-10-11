@@ -7,7 +7,7 @@
   "angular js" : ["angularjs", "angular", "angular 4 js", "angular2"],
   "vue js" : ["vue.js", "vue js"],
   "javascript" : ["javascript", "js", "java script"],
-  "front end" : ["frontend", "front end"],
+  "front end" : ["frontend", "front end", "front-end"],
   "bootstrap" : ["twitter bootstrap", "bootstrap"],
   "jquery" : ["jquery"],
   "aws" : ["aws", "amazon web services", "amazon aws", "aws services", "aws lambda", "amazon ec2", "amazon s3"],
@@ -15,14 +15,14 @@
   "jenkins" : ["jenkins"],
   "react js" : ["reactjs", "react", "react javascript", "react.js"],
   "ios" : ["ios"],
-  "android" : ["android"],
+  "android" : ["android", "native android"],
   "mysql" : ["mysql"],
   "php" : ["php"],
   "ruby" : ["ruby on rails", "ror", "rails", "ruby"],
   "mongodb" : ["mongodb"],
   "rxjs" : ["rxjs", "reactive", "reactivex"],
   "micro services" : ["micro services"],
-  "java" : ["java8", "java7", "java6", "java", "javaee"],
+  "java" : ["java8", "java7", "java6", "java", "javaee", "core java"],
   "spring" :["spring"],
   "rest" :["restful", "rest", "restapi"],
   "es6" : ["es6", "ecmascript6", "ecmascript", "ecma script"],
@@ -44,5 +44,16 @@
   "extjs" : ["ext js", "ext.js", "ext javascript"],
   "dom" : ["dom"],
   "spa": ["spa"],
-  "ajax" : ["ajax"]
+  "ajax" : ["ajax"],
+  "back end" : ["back end", "backend", "back-end"],
+  "app" : ["app", "apps", "application", "applications"],
+  "api" : ["api", "apis", "api's"],
+  "software" : ["software"],
+  "ui" : ["ui", "Ui/ux", "UX/UI"],
+  "Google Play Store" : ["Google Play Store"],
+  "game" : ["game", "games"],
+  "mobile" : ["mobile", "mobiles"],
+  "sdk":  ["sdk"]
+
+
 }
