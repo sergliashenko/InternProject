@@ -54,6 +54,4 @@
   "game" : ["game", "games"],
   "mobile" : ["mobile", "mobiles"],
   "sdk":  ["sdk"]
-
-
 }

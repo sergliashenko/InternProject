@@ -1,7 +1,11 @@
 import uwHtmlParser
 import encoder
+from sklearn.externals import joblib
+import os
 
 from typing import List, Tuple
+
+model = joblib.load(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "model2.pkl")))
 
 
 def predict_job(job, model):

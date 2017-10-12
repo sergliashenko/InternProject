@@ -1,4 +1,4 @@
-from src import utils
+import utils
 
 import os
 import json
@@ -7,9 +7,10 @@ import re
 from datetime import datetime, date
 from fuzzywuzzy import fuzz
 
-with open(os.path.join("resources", "skills.json")) as f:
+
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "skills.json"))) as f:
     SKILLS = json.load(f)
-with open(os.path.join("resources", "key_words.json")) as f:
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "key_words.json"))) as f:
     key_words = json.load(f)
 
 

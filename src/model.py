@@ -21,7 +21,7 @@ def prepare_data(path: str) -> Tuple[np.ndarray, np.ndarray]:
     for root, dirs, files in os.walk(path):
         for f in files:
             if f.endswith(".json"):
-                # print(f)
+                print(f)
                 with open(os.path.join(root, f)) as ff:
                     job_desc = json.load(ff)
 
@@ -43,14 +43,19 @@ def cross_validate(features: np.ndarray, labels: np.ndarray, n_folds: int=10):
     cv_rf = GridSearchCV(estimator=rf, param_grid=parameters_grid, scoring="f1", cv=n_folds, verbose=1, n_jobs=-1)
     cv_rf.fit(X_train, y_train)
 
+    print(cv_rf.cv_results_)
+    print(cv_rf.best_score_)
     y_pred = cv_rf.best_estimator_.predict_proba(X_test)
     y_pred = y_pred[:,0]
     for i in range(30, 90, 5):
         print(i)
         y_temp_pred = np.where(y_pred>(float(i)/100), 0.0, 1.0)
-        print(confusion_matrix(y_test, y_temp_pred))
+        print(classification_report(y_test, y_temp_pred))
+        conf_m = confusion_matrix(y_test, y_temp_pred)
+        conf_m_norm = conf_m.astype('float') / conf_m.sum(axis=1)[:, np.newaxis]
+        print(conf_m)
+        print(conf_m_norm)
 
-    print(cv_rf.cv_results_)
 
     return cv_rf.best_estimator_
 
@@ -85,9 +90,9 @@ def load_model(path):
 
 
 def balance_dataset(features, labels):
-    pos_num = np.sum(labels)
+    pos_num = int(np.sum(labels))
     neg_num = labels.shape[0] - pos_num
-    idxs = np.random.randint(neg_num, size=pos_num * 2)
+    idxs = np.random.randint(neg_num, size=pos_num*2)
     features = np.concatenate([features[labels == 1.0], features[labels == 0.0][idxs]])
     labels = np.concatenate([labels[labels == 1.0], labels[labels == 0.0][idxs]])
     return features, labels
@@ -111,11 +116,11 @@ if __name__ == '__main__':
     # evaluate_features(os.path.join("resources", "data", "model1.pkl"))
     # exit()
     features, labels = prepare_data(os.path.join("resources", "data"))
-    # print(labels.shape)
     # exit()
+    print(features.shape)
     features, labels = balance_dataset(features, labels)
     # test(features, labels)
-
+    print(features.shape)
     model = cross_validate(features=features, labels=labels)
-    save_model(model, os.path.join("resources", "model.pkl"))
+    save_model(model, os.path.join("resources", "model2.pkl"))
 

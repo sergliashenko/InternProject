@@ -10,7 +10,8 @@ MASK_URL = "https://www.upwork.com/o/jobs/browse/"
 JSON_PATH = "./JSON_data/"
 
 # NOTE: replace this parameters with ones in your browser
-COOKIE = "session_id=a74eef23d94b4b5104f924938e578d7a; device_view=full; __cfduid=df9c47403359cc0a75f6f9a44e8a070361507736897; visitor_id=62.80.165.250.1507736891534564; qt_visitor_id=62.80.165.250.1507736891534564; XSRF-TOKEN=cdfcc862899c3b73931d268cb41573db"
+# COOKIE = "session_id=a74eef23d94b4b5104f924938e578d7a; device_view=full; __cfduid=df9c47403359cc0a75f6f9a44e8a070361507736897; visitor_id=62.80.165.250.1507736891534564; qt_visitor_id=62.80.165.250.1507736891534564; XSRF-TOKEN=cdfcc862899c3b73931d268cb41573db"
+COOKIE = "session_id=a21348444e3a68f2c184e17e895d837c; device_view=full; __cfduid=d19f8bb6460573b987209b0871bdeb74f1507734356; visitor_id=62.80.165.250.150702888696067; qt_visitor_id=23.14.94.184.1349767611467449; XSRF-TOKEN=ad585892c50cacaa89c3a123a88245ad"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36 OPR/48.0.2685.35"
 
 
@@ -188,6 +189,7 @@ def parser_for_direction(direction: str, max_number_of_jobs: int=10):
     # print("All pages:" + str(pages))
 
     job_counter = 0
+
     projects = []
     for number_of_page in range(1, 9999):
         print("At now parse pages: " + str(number_of_page))

@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 
 
-model = joblib.load(os.path.join("resources", "model.pkl"))
+model = joblib.load(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "model2.pkl")))
 
 
 @app.route("/")
@@ -50,4 +50,4 @@ def predict_direction():
     return s
 
 
-app.run(port=5000)
+app.run(host="0.0.0.0", port=5000)

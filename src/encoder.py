@@ -1,9 +1,9 @@
-from src import features
+import features
 
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.preprocessing import LabelBinarizer
 import numpy as np
-from src.utils import normalize
+from utils import normalize
 
 import os
 import json
@@ -13,24 +13,25 @@ job_type_price = ["fixed price", "hourly"]
 job_type_price_encoder = MultiLabelBinarizer()
 job_type_price_encoder.fit([job_type_price])
 
-with open(os.path.join("resources", "skills.json")) as f:
+
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "skills.json"))) as f:
     skills_encoder = MultiLabelBinarizer()
     skills_encoder.fit([json.load(f).keys()])
 
-with open(os.path.join("resources", "key_words.json")) as f:
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "key_words.json"))) as f:
     key_words_encoder = MultiLabelBinarizer()
     key_words_encoder.fit([json.load(f).keys()])
 
-with open(os.path.join("resources", "countries.json")) as f:
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "countries.json"))) as f:
     countries_encoder = LabelBinarizer()
     data = json.load(f)
     countries_encoder.fit(data)
 
-with open(os.path.join("resources", "project_status.json")) as f:
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "project_status.json"))) as f:
     project_status_encoder = MultiLabelBinarizer()
     project_status_encoder.fit([json.load(f)])
 
-with open(os.path.join("resources", "words_more.json")) as f:
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join("resources", "words_more.json"))) as f:
     words_encoder = MultiLabelBinarizer()
     words_encoder.fit([json.load(f)])
 
